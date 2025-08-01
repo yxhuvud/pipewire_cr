@@ -1,0 +1,9 @@
+name: pipewire_cr
+version: 0.1.0
+
+authors:
+  - Linus Sellberg <sellberg@gmail.com>
+
+crystal: '>= 1.14.0'
+
+license: MIT
