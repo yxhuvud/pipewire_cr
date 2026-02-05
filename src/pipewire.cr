@@ -4,10 +4,11 @@ require "json"
 module Pipewire
   VERSION = "0.1.0"
 
+  alias AudioFormat = LibPipewire::SpaAudioFormat
+  SIZE = 1
   def self.init(name)
-    size = 1
     args = [name.to_unsafe]
-    LibPipewire.pw_init(pointerof(size), args.to_unsafe)
+    LibPipewire.pw_init(pointerof(SIZE), args.to_unsafe)
   end
 
   class Stream
@@ -16,10 +17,11 @@ module Pipewire
     end
 
     def initialize(loop : LibPipewire::Loop*, name, properties : Hash, stream_events, user_data)
+      @properties = Properties.new(properties)
       @stream = LibPipewire.pw_stream_new_simple(
         loop,
         name.to_unsafe,
-        Properties.new(properties),
+        @properties,
         stream_events,
         user_data
       )
@@ -30,28 +32,17 @@ module Pipewire
     alias Flags = LibPipewire::StreamFlags
     alias State = LibPipewire::StreamState
 
-    def connect(direction : LibPipewire::Direction,
-                flags : Flags,
-                format : LibPipewire::SpaAudioFormat = :spa_audio_format_s16,
-                channels = :default,
-                rate = :default,
-                target : UInt32 = PW_ID_ANY)
-      params = SpaAudioInfoRaw.new(
-        format:,
-        flags: 0,
-        rate:,
-        channels:,
-        position:
-          
-      )
+    def connect(params : Array(Pipewire::LibPipewire::SpaPod*),
+                direction : LibPipewire::Direction,
+                target : UInt32 = PW_ID_ANY,
+                flags : Flags = :none)
       LibPipewire.pw_stream_connect(
         self,
         direction,
         target,
         flags,
         params,
-        1
-      )
+        params.size)
     end
 
     def to_unsafe
@@ -95,9 +86,6 @@ module Pipewire
   end
 
   class Properties
-    #    The properties are owned by the stream and freed when the stream is destroyed later.
-    #
-    # So may create GC issues?
     def initialize(properties : Hash(PropertyKey, String))
       @properties = properties
     end
@@ -139,6 +127,23 @@ module Pipewire
 
     def to_unsafe
       @loop
+    end
+
+    def process_all
+      LibPipewire.pw_loop_enter(loop)
+      fd = LibPipewire.pw_loop_get_fd(loop)
+      file = IO::FileDescriptor.new(fd)
+      event_loop = Crystal::EventLoop.current
+
+      loop do
+        p :a
+        event_loop.wait_readable(file)
+        res = LibPipewire.pw_loop_iterate(loop, 0)
+        # positive = fds polled, so not interesting
+        raise "error: #{res}" if res < 0
+      end
+    ensure
+      LibPipewire.pw_loop_leave(loop)
     end
   end
 

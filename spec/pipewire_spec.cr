@@ -45,6 +45,10 @@ describe Pipewire do
   it "can play a jig" do
     # https://docs.pipewire.org/page_tutorial4.html
     handler = Handler.new
+    # TODO: Extract system defaults
+    rate = 44100
+    channels = 2
+    volume = 0.7
 
     Pipewire.init "hello"
     main_loop = Pipewire::MainLoop.new
@@ -63,12 +67,28 @@ describe Pipewire do
       },
       stream_events
     )
-    stream.connect(
-      direction: :output,
-      flags: Pipewire::Stream::Flags::Autoconnect |
-      Pipewire::Stream::Flags::MapBuffers |
-      Pipewire::Stream::Flags::RtProcess,
+
+    positions = StaticArray(UInt32, Pipewire::LibPipewire::MAX_CHANNELS).new { 0u32 }
+    info = Pipewire::LibPipewire::SpaAudioInfoRaw.new(
+      format: Pipewire::AudioFormat::SPA_AUDIO_FORMAT_S16,
+      rate: rate,
+      channels: channels,
+      position: positions
     )
+    pod = Pipewire::LibPipewire.spa_format_audio_raw_build(
+      pod_builder,
+      Pipewire::LibPipewire::SpaParamType::EnumFormat,
+      pointerof(info),
+    )
+    params = [pod]
+
+    stream.connect(
+      params: params,
+      direction: Pipewire::LibPipewire::Direction::Output,
+      flags: Pipewire::Stream::Flags::Autoconnect |
+      Pipewire::Stream::Flags::MapBuffers 
+    )
+    main_loop.process_all
   end
 
   it "can capture video frames" do

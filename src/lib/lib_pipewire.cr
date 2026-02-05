@@ -1,5 +1,5 @@
 module Pipewire
-  @[Link("pipewire-0.3")]
+  @[Link("pipewire-0.3", ldflags: "#{__DIR__}/../../build/shim.o")]
   lib LibPipewire
     type Loop = Void
     type MainLoop = Void
@@ -74,7 +74,8 @@ module Pipewire
       channels : UInt32
       position : UInt32[MAX_CHANNELS]
     end
-    MAX_CHANNELS=64
+
+    MAX_CHANNELS = 64
 
     struct StreamEvent
       version : UInt32 # 2
@@ -114,6 +115,38 @@ module Pipewire
       params : SpaPod**,
       n_params : UInt32,
     ) : LibC::Int
+
+    fun spa_format_audio_raw_build = spa_format_audio_raw_build_shim(
+      builder : SpaPodBuilder*,
+      id : SpaParamType,
+      info : SpaAudioInfoRaw*,
+    ) : SpaPod*
+
+    fun pw_loop_enter=pw_loop_enter_shim(loop : Loop*) : Void
+    fun pw_loop_leave=pw_loop_leave_shim(loop : Loop*) : Void
+    fun pw_loop_iterate=pw_loop_iterate_shim(loop : Loop*, timeout : LibC::Int) : LibC::Int
+    fun pw_loop_get_fd=pw_loop_get_fd_shim(loop : Loop*) : LibC::Int
+
+    enum SpaParamType
+      Invalid
+      PropInfo
+      Props
+      EnumFormat
+      Format
+      Buffers
+      Meta
+      IO
+      EnumProfile
+      Profile
+      EnumPortConfig
+      PortConfig
+      EnumRoute
+      Route
+      Control
+      Latency
+      ProcessLatency
+      Tag
+    end
 
     enum SpaAudioFormat
       SPA_AUDIO_FORMAT_UNKNOWN
