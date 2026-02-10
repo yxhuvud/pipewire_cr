@@ -14,7 +14,6 @@ module Pipewire
 
     @[Flags]
     enum PodBuilderFlags
-      None
       Body
       First
     end

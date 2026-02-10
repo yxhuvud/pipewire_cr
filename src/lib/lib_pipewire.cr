@@ -14,7 +14,6 @@ module Pipewire
 
     @[Flags]
     enum StreamFlags
-      None
       Autoconnect
       Inactive
       MapBuffers
