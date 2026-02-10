@@ -93,6 +93,10 @@ module Pipewire
     def to_unsafe
       @core
     end
+
+    def finalize
+      LibPipewire.pw_core_disconnect(self)
+    end
   end
 
   class SpaPodBuilder
@@ -116,6 +120,10 @@ module Pipewire
 
     def to_unsafe
       @loop
+    end
+
+    def finalize
+      LibPipewire.pw_main_loop_destroy(self)
     end
 
     def process_all
@@ -159,6 +167,10 @@ module Pipewire
 
     def to_unsafe
       @context
+    end
+
+    def finalize
+      LibPipewire.pw_context_destroy(self)
     end
   end
 end
