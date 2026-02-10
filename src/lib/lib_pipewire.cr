@@ -53,7 +53,7 @@ module Pipewire
       trigger_done : Void* -> Void
     end
 
-    fun pw_init(LibC::Int*, LibC::Char**) : Void
+    fun pw_init(argc : LibC::Int*, argv : LibC::Char**) : Void
 
     fun pw_main_loop_new(Properties*) : MainLoop*
     fun pw_main_loop_get_loop(loop : MainLoop*) : Loop*
