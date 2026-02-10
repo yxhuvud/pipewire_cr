@@ -7,3 +7,6 @@ authors:
 crystal: '>= 1.14.0'
 
 license: MIT
+
+scripts:
+  postinstall: make build
