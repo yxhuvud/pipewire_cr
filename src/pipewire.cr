@@ -134,6 +134,10 @@ module Pipewire
     ensure
       LibPipewire.pw_loop_leave(loop)
     end
+
+    def run
+      LibPipewire.pw_main_loop_run(self)
+    end
   end
 
   class Context
