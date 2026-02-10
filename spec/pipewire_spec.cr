@@ -54,7 +54,7 @@ describe Pipewire do
     main_loop = Pipewire::MainLoop.new
 
     buffer = Slice(UInt8).new(1024)
-    pod_builder = Pipewire::SpaPodBuilder.new(buffer)
+    pod_builder = Pipewire::SPA::PodBuilder.new(buffer)
 
     stream_events = Pipewire::StreamEvents(Handler).new(handler)
     stream = Pipewire::Stream.new(
