@@ -1,5 +1,9 @@
 #include <pipewire/pipewire.h>
 
+const char* pw_get_headers_version_shim() {
+  return pw_get_headers_version();
+}
+
 void
 pw_loop_enter_shim(struct pw_loop *loop) {
   pw_loop_enter(loop);

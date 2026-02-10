@@ -102,6 +102,7 @@ module Pipewire
 
     fun pw_init(argc : LibC::Int*, argv : LibC::Char**) : Void
 
+    fun pw_get_headers_version = pw_get_headers_version_shim : LibC::Char*
     fun pw_get_library_version : LibC::Char*
 
     fun pw_main_loop_new(properties : LibSPA::Dict*) : MainLoop*
