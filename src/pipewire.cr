@@ -1,5 +1,6 @@
 require "./lib/lib_pipewire"
 require "./pipewire/property_key"
+require "./pipewire/registry"
 require "json"
 
 module Pipewire
@@ -83,6 +84,10 @@ module Pipewire
   class Core
     def initialize(core : LibPipewire::Core*)
       @core = core
+    end
+
+    def registry
+      Registry.new(LibPipewire.pw_core_get_registry(@core, LibPipewire::VERSION_REGISTRY, 0))
     end
 
     def to_unsafe
