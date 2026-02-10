@@ -15,10 +15,9 @@ stream = Pipewire::Stream.new(
     Pipewire::PropertyKey::MediaCategory => "Playback",
     Pipewire::PropertyKey::MediaRole     => "Music",
   },
-  stream_events
+  stream_events,
   nil
 )
-
 
 buffer = Slice(UInt8).new(1024)
 pod_builder = Pipewire::SpaPodBuilder.new(buffer)
