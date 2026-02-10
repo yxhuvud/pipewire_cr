@@ -8,7 +8,7 @@ TODO: Write a description here
 
    ```yaml
    dependencies:
-     pipewire_cr:
+     pipewire:
        github: your-github-user/pipewire_cr
    ```
 
@@ -17,7 +17,7 @@ TODO: Write a description here
 ## Usage
 
 ```crystal
-require "pipewire_cr"
+require "pipewire"
 ```
 
 TODO: Write usage instructions here
