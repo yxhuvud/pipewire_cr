@@ -84,6 +84,10 @@ module Pipewire
     def initialize(core : LibPipewire::Core*)
       @core = core
     end
+
+    def to_unsafe
+      @core
+    end
   end
 
   class SpaPodBuilder
