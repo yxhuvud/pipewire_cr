@@ -16,7 +16,7 @@ describe Pipewire do
     Pipewire.init "hello"
     main_loop = Pipewire::MainLoop.new
     context = Pipewire::Context.new(main_loop)
-    core = Pipewire::Core.new(context)
+    core = context.connect
     #     registry = pw_core_get_registry(core, PW_VERSION_REGISTRY,
     #                 0 /* user_data size */);
 
@@ -39,7 +39,7 @@ describe Pipewire do
     Pipewire.init "hello"
     main_loop = Pipewire::MainLoop.new
     context = Pipewire::Context.new(main_loop)
-    core = Pipewire::Core.new(context)
+    core = context.connect
   end
 
   it "can play a jig" do

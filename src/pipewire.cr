@@ -81,11 +81,6 @@ module Pipewire
   end
 
   class Core
-    def self.new(context, properties = nil, userdata_size = 0)
-      core = LibPipewire.pw_context_connect(context, properties, userdata_size)
-      new(core)
-    end
-
     def initialize(core : LibPipewire::Core*)
       @core = core
     end
@@ -143,6 +138,10 @@ module Pipewire
         properties,
         userdata_size
       )
+    end
+
+    def connect(properties = nil, user_data_size = 0)
+      Core.new(LibPipewire.pw_context_connect(self, properties, user_data_size))
     end
 
     def to_unsafe
