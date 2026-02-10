@@ -53,7 +53,7 @@ module Pipewire
 
   class StreamEvents(T)
     def initialize(@handler : T)
-      @stream_events = LibPipewire::StreamEvent.new(
+      @stream_events = LibPipewire::StreamEvents.new(
         version: 2,
         process: process_proc
       )

@@ -156,8 +156,40 @@ module Pipewire
       F64_OE    = F64_BE
     end
 
-    type Pod = Void
-    type PodFrame = Void
+    struct DictItem
+      key : LibC::Char*
+      value : LibC::Char*
+    end
+
+    struct Dict
+      flags : UInt32
+      n_items : UInt32
+      items : DictItem*
+    end
+
+    struct List
+      next_item : List*
+      previous_item : List*
+    end
+
+    struct Hook
+      link : List
+      callbacks : Callbacks
+      removed : Hook* -> Void
+      priv : Void*
+    end
+
+    struct Pod
+      size : UInt32
+      pod_type : UInt32
+    end
+
+    struct PodFrame
+      pod : Pod
+      parent : PodFrame*
+      offset : UInt32
+      flags : UInt32
+    end
 
     struct PodBuilderState
       offset : UInt32
@@ -178,6 +210,50 @@ module Pipewire
       callbacks : Callbacks
     end
 
+    struct Meta
+      meta_type : UInt32
+      size : UInt32
+      data : Void*
+    end
+
+    struct Chunk
+      offset : UInt32
+      size : UInt32
+      stride : Int32
+      flags : Int32
+    end
+
+    struct Data
+      data_type : UInt32
+      flags : UInt32
+      fd : Int64
+      mapoffset : UInt32
+      maxsize : UInt32
+      data : Void*
+      chunk : Chunk*
+    end
+
+    struct Buffer
+      n_metas : UInt32
+      n_datas : UInt32
+      metas : Meta*
+      datas : Data*
+    end
+
+    struct PodObjectBody
+      object_type : UInt32
+      id : UInt32
+    end
+
+    struct CommandBody
+      body : PodObjectBody
+    end
+
+    struct Command
+      pod : Pod
+      body : CommandBody
+    end
+
     struct AudioInfoRaw
       format : AudioFormat
       flags : UInt32
@@ -186,9 +262,14 @@ module Pipewire
       position : UInt32[MAX_CHANNELS]
     end
 
+    fun spa_pod_builder_push_object = spa_pod_builder_push_object_shim(builder : PodBuilder*, frame : PodFrame*, type : UInt32, id : UInt32) : Int32
+    fun spa_pod_builder_prop = spa_pod_builder_prop_shim(builder : PodBuilder*, key : UInt32, flags : UInt32) : Int32
+    fun spa_pod_get_array_values = spa_pod_get_array_values_shim(pod : Pod*, n_values : UInt32*) : Void*
+    fun spa_pod_is_array = spa_pod_is_array_shim(pod : Pod*) : Int32
+
     fun spa_format_audio_raw_build = spa_format_audio_raw_build_shim(
       builder : PodBuilder*,
-      id : ParamType,
+      id : UInt32,
       info : AudioInfoRaw*,
     ) : Pod*
   end
