@@ -1,7 +1,6 @@
 require "./lib/lib_pipewire"
 require "./pipewire/property_key"
 require "./pipewire/registry"
-require "json"
 
 module Pipewire
   VERSION = "0.1.0"
@@ -73,11 +72,15 @@ module Pipewire
 
   class Properties
     def initialize(properties : Hash(PropertyKey, String))
-      @properties = properties
+      dict = LibSPA::Dict.new(flags: 0, n_items: properties.size, items: properties.map do |key, value|
+        LibSPA::DictItem.new(key: key.key, value: value)
+      end)
+
+      @properties = LibPipewire.pw_properties_new_dict(pointerof(dict))
     end
 
     def to_unsafe
-      LibPipewire.pw_properties_new_string(@properties.to_json.to_unsafe)
+      @properties
     end
   end
 

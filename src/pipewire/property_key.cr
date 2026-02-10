@@ -1,14 +1,8 @@
-require "json"
-
 module Pipewire
   struct PropertyKey
     getter key : String
 
     def initialize(@key)
-    end
-
-    def to_json_object_key
-      self.key
     end
 
     PROTOCOL                     = new("pipewire.protocol")
