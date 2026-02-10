@@ -68,16 +68,16 @@ describe Pipewire do
       stream_events
     )
 
-    positions = StaticArray(UInt32, Pipewire::LibPipewire::MAX_CHANNELS).new { 0u32 }
-    info = Pipewire::LibPipewire::SpaAudioInfoRaw.new(
+    positions = StaticArray(UInt32, Pipewire::LibSPA::MAX_CHANNELS).new { 0u32 }
+    info = Pipewire::LibSPA::SpaAudioInfoRaw.new(
       format: Pipewire::AudioFormat::SPA_AUDIO_FORMAT_S16,
       rate: rate,
       channels: channels,
       position: positions
     )
-    pod = Pipewire::LibPipewire.spa_format_audio_raw_build(
+    pod = Pipewire::LibSPA.spa_format_audio_raw_build(
       pod_builder,
-      Pipewire::LibPipewire::SpaParamType::EnumFormat,
+      Pipewire::LibSPA::SpaParamType::EnumFormat,
       pointerof(info),
     )
     params = [pod]
