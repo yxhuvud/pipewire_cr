@@ -61,9 +61,9 @@ describe Pipewire do
       main_loop,
       "audio-src",
       {
-        Pipewire::PropertyKey::MediaType     => "Audio",
-        Pipewire::PropertyKey::MediaCategory => "Playback",
-        Pipewire::PropertyKey::MediaRole     => "Music",
+        Pipewire::PropertyKey::MEDIA_TYPE     => "Audio",
+        Pipewire::PropertyKey::MEDIA_CATEGORY => "Playback",
+        Pipewire::PropertyKey::MEDIA_ROLE     => "Music",
       },
       stream_events
     )

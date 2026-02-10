@@ -1,4 +1,5 @@
 require "./lib/lib_pipewire"
+require "./pipewire/property_key"
 require "json"
 
 module Pipewire
@@ -66,21 +67,6 @@ module Pipewire
 
     def to_unsafe
       pointerof(@stream_events)
-    end
-  end
-
-  @[Flags]
-  enum PropertyKey
-    MediaType
-    MediaCategory
-    MediaRole
-
-    def to_json_object_key
-      pipewire_key
-    end
-
-    def pipewire_key
-      to_s.underscore.tr("_", ".")
     end
   end
 
