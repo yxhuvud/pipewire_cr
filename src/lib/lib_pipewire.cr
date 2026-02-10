@@ -4,7 +4,7 @@ module Pipewire
   @[Link("pipewire-0.3", ldflags: "#{__DIR__}/../../build/shim_pipewire.o")]
   lib LibPipewire
     @[Flags]
-    enum StreamFlags
+    enum StreamFlag
       Autoconnect
       Inactive
       MapBuffers
@@ -71,7 +71,7 @@ module Pipewire
       stream : Stream*,
       direction : Direction,
       target_id : UInt32,
-      flags : StreamFlags,
+      flags : StreamFlag,
       params : LibSPA::Pod**,
       n_params : UInt32,
     ) : LibC::Int

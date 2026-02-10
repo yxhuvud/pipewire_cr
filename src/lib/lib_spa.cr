@@ -4,7 +4,7 @@ module Pipewire
     MAX_CHANNELS = 64
 
     @[Flags]
-    enum PodBuilderFlags
+    enum PodBuilderFlag
       Body
       First
     end
@@ -161,7 +161,7 @@ module Pipewire
 
     struct PodBuilderState
       offset : UInt32
-      flags : PodBuilderFlags
+      flags : PodBuilderFlag
       frame : Pointer(PodFrame)
     end
 

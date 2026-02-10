@@ -30,13 +30,13 @@ module Pipewire
 
     PW_ID_ANY = 0xffffffffu32
 
-    alias Flags = LibPipewire::StreamFlags
+    alias Flag = LibPipewire::StreamFlag
     alias State = LibPipewire::StreamState
 
     def connect(params : Array(Pipewire::LibSPA::Pod*),
                 direction : LibPipewire::Direction,
                 target : UInt32 = PW_ID_ANY,
-                flags : Flags = :none)
+                flags : Flag = :none)
       LibPipewire.pw_stream_connect(
         self,
         direction,

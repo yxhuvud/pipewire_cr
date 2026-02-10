@@ -85,8 +85,8 @@ describe Pipewire do
     stream.connect(
       params: params,
       direction: Pipewire::LibPipewire::Direction::Output,
-      flags: Pipewire::Stream::Flags::Autoconnect |
-             Pipewire::Stream::Flags::MapBuffers
+      flags: Pipewire::Stream::Flag::Autoconnect |
+             Pipewire::Stream::Flag::MapBuffers
     )
     main_loop.process_all
   end
