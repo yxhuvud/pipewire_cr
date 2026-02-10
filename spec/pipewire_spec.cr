@@ -86,7 +86,7 @@ describe Pipewire do
       params: params,
       direction: Pipewire::LibPipewire::Direction::Output,
       flags: Pipewire::Stream::Flags::Autoconnect |
-      Pipewire::Stream::Flags::MapBuffers 
+             Pipewire::Stream::Flags::MapBuffers
     )
     main_loop.process_all
   end
