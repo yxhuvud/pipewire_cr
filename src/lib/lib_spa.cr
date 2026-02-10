@@ -1,16 +1,7 @@
 module Pipewire
   @[Link("pipewire-0.3", ldflags: "#{__DIR__}/../../build/shim_spa.o")]
   lib LibSPA
-    type Pod = Void
-    type PodFrame = Void
-
-    struct PodBuilder
-      data : Pointer(Void)
-      size : UInt32
-      padding : UInt32
-      state : PodBuilderState
-      callbacks : Callbacks
-    end
+    MAX_CHANNELS = 64
 
     @[Flags]
     enum PodBuilderFlags
@@ -22,33 +13,6 @@ module Pipewire
       Input
       Output
     end
-
-    struct PodBuilderState
-      offset : UInt32
-      flags : PodBuilderFlags
-      frame : Pointer(PodFrame)
-    end
-
-    struct Callbacks
-      funcs : Pointer(Void)
-      data : Pointer(Void)
-    end
-
-    struct AudioInfoRaw
-      format : AudioFormat
-      flags : UInt32
-      rate : UInt32
-      channels : UInt32
-      position : UInt32[MAX_CHANNELS]
-    end
-
-    MAX_CHANNELS = 64
-
-    fun spa_format_audio_raw_build = spa_format_audio_raw_build_shim(
-      builder : PodBuilder*,
-      id : ParamType,
-      info : AudioInfoRaw*,
-    ) : Pod*
 
     enum ParamType
       Invalid
@@ -191,5 +155,41 @@ module Pipewire
       F32_OE    = F32_BE
       F64_OE    = F64_BE
     end
+
+    type Pod = Void
+    type PodFrame = Void
+
+    struct PodBuilderState
+      offset : UInt32
+      flags : PodBuilderFlags
+      frame : Pointer(PodFrame)
+    end
+
+    struct Callbacks
+      funcs : Pointer(Void)
+      data : Pointer(Void)
+    end
+
+    struct PodBuilder
+      data : Pointer(Void)
+      size : UInt32
+      padding : UInt32
+      state : PodBuilderState
+      callbacks : Callbacks
+    end
+
+    struct AudioInfoRaw
+      format : AudioFormat
+      flags : UInt32
+      rate : UInt32
+      channels : UInt32
+      position : UInt32[MAX_CHANNELS]
+    end
+
+    fun spa_format_audio_raw_build = spa_format_audio_raw_build_shim(
+      builder : PodBuilder*,
+      id : ParamType,
+      info : AudioInfoRaw*,
+    ) : Pod*
   end
 end

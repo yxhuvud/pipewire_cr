@@ -3,15 +3,6 @@ require "./lib_spa"
 module Pipewire
   @[Link("pipewire-0.3", ldflags: "#{__DIR__}/../../build/shim_pipewire.o")]
   lib LibPipewire
-    type Loop = Void
-    type MainLoop = Void
-    type Stream = Void
-    type Context = Void
-    type Properties = Void
-    type Core = Void
-
-    alias Direction = LibSPA::Direction
-
     @[Flags]
     enum StreamFlags
       Autoconnect
@@ -36,6 +27,15 @@ module Pipewire
       Paused
       Streaming
     end
+
+    type Loop = Void
+    type MainLoop = Void
+    type Stream = Void
+    type Context = Void
+    type Properties = Void
+    type Core = Void
+
+    alias Direction = LibSPA::Direction
 
     struct StreamEvent
       version : UInt32 # 2
