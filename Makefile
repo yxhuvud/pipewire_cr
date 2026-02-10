@@ -11,11 +11,11 @@ spec  : build
 	crystal spec --error-trace
 
 build : init
-	cc $(CFLAGS) -c -o build/shim.o src/c/shim.c -lm $(LDFLAGS)
+	cc $(CFLAGS) -c -o build/shim_pipewire.o src/c/shim_pipewire.c -lm $(LDFLAGS)
+	cc $(CFLAGS) -c -o build/shim_spa.o      src/c/shim_spa.c      -lm $(LDFLAGS)
 
 clean :
 	rm build/*
 
 init :
 	mkdir -p build
-

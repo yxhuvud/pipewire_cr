@@ -1,5 +1,5 @@
 module Pipewire
-  @[Link("pipewire-0.3", ldflags: "#{__DIR__}/../../build/shim.o")]
+  @[Link("pipewire-0.3", ldflags: "#{__DIR__}/../../build/shim_pipewire.o #{__DIR__}/../../build/shim_spa.o")]
   lib LibPipewire
     type Loop = Void
     type MainLoop = Void
