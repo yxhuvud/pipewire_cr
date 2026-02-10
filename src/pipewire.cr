@@ -4,7 +4,7 @@ require "json"
 module Pipewire
   VERSION = "0.1.0"
 
-  alias AudioFormat = LibSPA::SpaAudioFormat
+  alias AudioFormat = LibSPA::AudioFormat
   SIZE = 1
 
   def self.init(name)
@@ -33,7 +33,7 @@ module Pipewire
     alias Flags = LibPipewire::StreamFlags
     alias State = LibPipewire::StreamState
 
-    def connect(params : Array(Pipewire::LibSPA::SpaPod*),
+    def connect(params : Array(Pipewire::LibSPA::Pod*),
                 direction : LibPipewire::Direction,
                 target : UInt32 = PW_ID_ANY,
                 flags : Flags = :none)
@@ -109,7 +109,7 @@ module Pipewire
 
   class SpaPodBuilder
     def initialize(data, size = data.size)
-      @spa_pod_builder = LibSPA::SpaPodBuilder.new(data: data.to_unsafe, size: size)
+      @spa_pod_builder = LibSPA::PodBuilder.new(data: data.to_unsafe, size: size)
     end
 
     def to_unsafe

@@ -73,7 +73,7 @@ module Pipewire
       direction : Direction,
       target_id : UInt32,
       flags : StreamFlags,
-      params : LibSPA::SpaPod**,
+      params : LibSPA::Pod**,
       n_params : UInt32,
     ) : LibC::Int
 
