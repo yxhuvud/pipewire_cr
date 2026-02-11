@@ -19,3 +19,7 @@ int spa_pod_builder_push_object_shim(struct spa_pod_builder *builder, struct spa
 int spa_pod_builder_prop_shim(struct spa_pod_builder *builder, uint32_t key, uint32_t flags) {
 	return spa_pod_builder_prop(builder, key, flags);
 }
+
+void spa_hook_remove_shim(struct spa_hook *hook) {
+  return spa_hook_remove(hook);
+}

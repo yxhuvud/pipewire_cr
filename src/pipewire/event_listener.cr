@@ -53,6 +53,11 @@ module Pipewire
 
           LibPipewire.pw_{{ type_name.downcase }}_add_listener(@host, pointerof(@hook), pointerof(@events), @box)
         end
+
+        def remove
+          @host.event_listeners_{{ callback_name }}.delete(self)
+          ::Pipewire::LibSPA.spa_hook_remove(pointerof(@hook))
+        end
       end
     end
   end

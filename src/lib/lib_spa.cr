@@ -272,5 +272,7 @@ module Pipewire
       id : UInt32,
       info : AudioInfoRaw*,
     ) : Pod*
+
+    fun spa_hook_remove = spa_hook_remove_shim(hook : Hook*) : Void
   end
 end
