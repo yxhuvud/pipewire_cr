@@ -12,7 +12,8 @@ module Pipewire
 
     NODE_EVENT_PARAM = 1
 
-    ID_ANY = 0xffffffffu32
+    ID_ANY  = 0xffffffffu32
+    ID_CORE =             0
 
     @[Flags]
     enum StreamFlag
@@ -138,6 +139,7 @@ module Pipewire
     fun pw_context_destroy(context : Context*) : Void
     fun pw_core_add_listener(core : Core*, listener : LibSPA::Hook*, events : CoreEvents*, data : Void*) : LibC::Int
     fun pw_core_get_registry(core : Core*, version : UInt32, user_data_size : LibC::SizeT) : Registry*
+    fun pw_core_sync(core : Core*, id : UInt32, seq : LibC::Int) : LibC::Int
     fun pw_core_disconnect(core : Core*) : LibC::Int
     fun pw_registry_add_listener(registry : Registry*, listener : LibSPA::Hook*, events : RegistryEvents*, data : Void*) : LibC::Int
     fun pw_registry_bind(registry : Registry*, id : UInt32, type : LibC::Char*, version : UInt32, user_data_size : LibC::SizeT) : Void*

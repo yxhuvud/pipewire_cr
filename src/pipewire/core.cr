@@ -21,6 +21,10 @@ module Pipewire
       Registry.new(LibPipewire.pw_core_get_registry(self, LibPipewire::VERSION_REGISTRY, 0))
     end
 
+    def sync(seq)
+      LibPipewire.pw_core_sync(self, LibPipewire::ID_CORE, seq)
+    end
+
     def finalize
       LibPipewire.pw_core_disconnect(self)
     end
