@@ -3,6 +3,7 @@ require "./lib_spa"
 module Pipewire
   @[Link("pipewire-0.3", ldflags: "#{__DIR__}/../../build/shim_pipewire.o")]
   lib LibPipewire
+    VERSION_CORE_EVENTS     = 1
     VERSION_REGISTRY_EVENTS = 0
     VERSION_NODE_EVENTS     = 0
     VERSION_STREAM_EVENTS   = 2
@@ -100,6 +101,28 @@ module Pipewire
       global_remove : Void*, UInt32 -> Void
     end
 
+    struct CoreInfo
+      id : UInt32
+      cookie : UInt32
+      user_name : LibC::Char*
+      host_name : LibC::Char*
+      version : LibC::Char*
+      change_mask : UInt64
+    end
+
+    struct CoreEvents
+      version : UInt32
+      info : Void*, CoreInfo* -> Void
+      done : Void*, UInt32, LibC::Int -> Void
+      ping : Void*, UInt32, LibC::Int -> Void
+      error : Void*, UInt32, LibC::Int, LibC::Int, LibC::Char* -> Void
+      remove_id : Void*, UInt32 -> Void
+      bound_id : Void*, UInt32, UInt32 -> Void
+      add_mem : Void*, UInt32, UInt32, LibC::Int, UInt32 -> Void
+      remove_mem : Void*, UInt32 -> Void
+      bound_props : Void*, UInt32, UInt32, LibSPA::Dict* -> Void
+    end
+
     fun pw_init(argc : LibC::Int*, argv : LibC::Char**) : Void
 
     fun pw_get_headers_version = pw_get_headers_version_shim : LibC::Char*
@@ -113,6 +136,7 @@ module Pipewire
     fun pw_context_new(loop : Loop*, properties : Properties*, user_data_size : LibC::SizeT) : Context*
     fun pw_context_connect(context : Context*, properties : Properties*, user_data_size : LibC::SizeT) : Core*
     fun pw_context_destroy(context : Context*) : Void
+    fun pw_core_add_listener(core : Core*, listener : LibSPA::Hook*, events : CoreEvents*, data : Void*) : LibC::Int
     fun pw_core_get_registry(core : Core*, version : UInt32, user_data_size : LibC::SizeT) : Registry*
     fun pw_core_disconnect(core : Core*) : LibC::Int
     fun pw_registry_add_listener(registry : Registry*, listener : LibSPA::Hook*, events : RegistryEvents*, data : Void*) : LibC::Int
