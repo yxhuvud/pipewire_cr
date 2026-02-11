@@ -35,5 +35,9 @@ module Pipewire
     def run
       LibPipewire.pw_main_loop_run(self)
     end
+
+    def quit
+      LibPipewire.pw_main_loop_quit(self)
+    end
   end
 end

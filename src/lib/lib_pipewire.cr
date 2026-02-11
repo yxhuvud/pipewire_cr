@@ -133,6 +133,7 @@ module Pipewire
     fun pw_main_loop_get_loop(loop : MainLoop*) : Loop*
     @[Raises]
     fun pw_main_loop_run(loop : MainLoop*) : LibC::Int
+    fun pw_main_loop_quit(loop : MainLoop*) : LibC::Int
     fun pw_main_loop_destroy(loop : MainLoop*) : Void
     fun pw_context_new(loop : Loop*, properties : Properties*, user_data_size : LibC::SizeT) : Context*
     fun pw_context_connect(context : Context*, properties : Properties*, user_data_size : LibC::SizeT) : Core*
