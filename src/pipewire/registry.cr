@@ -48,7 +48,7 @@ module Pipewire
     end
 
     def finalize
-      LibPipewire.pw_proxy_destroy(@registry.as(Pointer(LibPipewire::Proxy)))
+      LibPipewire.pw_proxy_destroy(self.to_unsafe.as(Pointer(LibPipewire::Proxy)))
     end
   end
 end
