@@ -1,17 +1,14 @@
 require "../lib/lib_pipewire"
+require "./base"
 
 module Pipewire
-  class MainLoop
+  class MainLoop < Base(LibPipewire::MainLoop)
     def initialize
-      @loop = LibPipewire.pw_main_loop_new(nil)
+      @pointer = LibPipewire.pw_main_loop_new(nil)
     end
 
     def loop
       LibPipewire.pw_main_loop_get_loop(self)
-    end
-
-    def to_unsafe
-      @loop
     end
 
     def finalize

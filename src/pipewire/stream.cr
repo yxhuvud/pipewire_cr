@@ -2,14 +2,14 @@ require "./properties"
 require "./main_loop"
 
 module Pipewire
-  class Stream
+  class Stream < Base(LibPipewire::Stream)
     def self.new(main_loop : MainLoop, name, properties, stream_events, userdata = nil)
       new(main_loop.loop, name, properties, stream_events, userdata)
     end
 
     def initialize(loop : LibPipewire::Loop*, name, properties : Hash, stream_events, user_data)
       @properties = Properties.new(properties)
-      @stream = LibPipewire.pw_stream_new_simple(
+      @pointer = LibPipewire.pw_stream_new_simple(
         loop,
         name.to_unsafe,
         @properties,
@@ -32,10 +32,6 @@ module Pipewire
         flags,
         params,
         params.size)
-    end
-
-    def to_unsafe
-      @stream
     end
   end
 

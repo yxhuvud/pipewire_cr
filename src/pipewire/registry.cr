@@ -1,10 +1,8 @@
 require "../lib/lib_pipewire"
+require "./base"
 
 module Pipewire
-  class Registry
-    def initialize(@registry : LibPipewire::Registry*)
-    end
-
+  class Registry < Base(LibPipewire::Registry)
     class EventListenerGlobal
       def initialize(@registry : Registry, callback : UInt32, UInt32, String, UInt32, Pipewire::LibSPA::Dict -> Void)
         @hook = LibSPA::Hook.new

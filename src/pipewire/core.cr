@@ -1,17 +1,9 @@
 require "./registry"
 
 module Pipewire
-  class Core
-    def initialize(core : LibPipewire::Core*)
-      @core = core
-    end
-
+  class Core < Base(LibPipewire::Core)
     def registry
       Registry.new(LibPipewire.pw_core_get_registry(self, LibPipewire::VERSION_REGISTRY, 0))
-    end
-
-    def to_unsafe
-      @core
     end
 
     def finalize
