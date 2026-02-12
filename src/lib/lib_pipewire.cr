@@ -146,6 +146,7 @@ module Pipewire
     fun pw_registry_bind(registry : Registry*, id : UInt32, type : LibC::Char*, version : UInt32, user_data_size : LibC::SizeT) : Void*
     fun pw_node_add_listener(object : Node*, listener : LibSPA::Hook*, events : NodeEvents*, data : Void*) : LibC::Int
     fun pw_node_set_param(object : Node*, id : UInt32, flags : UInt32, param : LibSPA::Pod*) : LibC::Int
+    fun pw_stream_new(core : Core*, name : LibC::Char*, properties : Properties*) : Stream*
     fun pw_stream_new_simple(loop : Loop*, name : LibC::Char*, properties : Properties*, stream_events : StreamEvents*, user_data : Void*) : Stream*
     fun pw_stream_dequeue_buffer(stream : Stream*) : Buffer*
     fun pw_stream_queue_buffer(stream : Stream*, buffer : Buffer*) : LibC::Int

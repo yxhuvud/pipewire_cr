@@ -7,6 +7,11 @@ module Pipewire
       new(main_loop.loop, name, properties, stream_events, userdata)
     end
 
+    def initialize(core : Core, name, properties)
+      @properties = Properties.new(properties)
+      @pointer = LibPipewire.pw_stream_new(core, name, @properties)
+    end
+
     def initialize(loop : LibPipewire::Loop*, name, properties : Hash, stream_events, user_data)
       @properties = Properties.new(properties)
       @pointer = LibPipewire.pw_stream_new_simple(
