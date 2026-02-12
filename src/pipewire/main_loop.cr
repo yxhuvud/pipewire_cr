@@ -1,5 +1,5 @@
 require "../lib/lib_pipewire"
-require "./base"
+require "./context"
 
 module Pipewire
   class MainLoop < Base(LibPipewire::MainLoop)
@@ -38,6 +38,10 @@ module Pipewire
 
     def quit
       LibPipewire.pw_main_loop_quit(self)
+    end
+
+    def create_context(properties = nil, user_data_size = 0)
+      Context.new(LibPipewire.pw_context_new(self.loop, properties, user_data_size))
     end
   end
 end

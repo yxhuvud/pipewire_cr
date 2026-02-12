@@ -15,7 +15,7 @@ describe Pipewire do
     # https://docs.pipewire.org/page_tutorial2.html
     Pipewire.init "hello"
     main_loop = Pipewire::MainLoop.new
-    context = Pipewire::Context.new(main_loop)
+    context = main_loop.create_context
     core = context.connect
     #     registry = pw_core_get_registry(core, PW_VERSION_REGISTRY,
     #                 0 /* user_data size */);
@@ -38,7 +38,7 @@ describe Pipewire do
     # https://docs.pipewire.org/page_tutorial3.html
     Pipewire.init "hello"
     main_loop = Pipewire::MainLoop.new
-    context = Pipewire::Context.new(main_loop)
+    context = main_loop.create_context
     core = context.connect
   end
 

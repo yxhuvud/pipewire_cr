@@ -3,7 +3,7 @@ require "../src/pipewire"
 Pipewire.init("tutorial2")
 
 main_loop = Pipewire::MainLoop.new
-context = Pipewire::Context.new(main_loop)
+context = main_loop.create_context
 core = context.connect
 registry = core.registry
 
