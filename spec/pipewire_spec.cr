@@ -1,14 +1,5 @@
 require "./spec_helper"
 
-class Handler
-  def initialize
-  end
-
-  def process
-    p :hi
-  end
-end
-
 describe Pipewire do
   # TODO: Write tests
   it "can enumerate objects" do
@@ -44,7 +35,6 @@ describe Pipewire do
 
   it "can play a jig" do
     # https://docs.pipewire.org/page_tutorial4.html
-    handler = Handler.new
     # TODO: Extract system defaults
     rate = 44100
     channels = 2
@@ -52,21 +42,24 @@ describe Pipewire do
 
     Pipewire.init "hello"
     main_loop = Pipewire::MainLoop.new
+    context = main_loop.create_context
+    core = context.connect
 
     buffer = Slice(UInt8).new(1024)
     pod_builder = Pipewire::SPA::PodBuilder.new(buffer)
 
-    stream_events = Pipewire::StreamEvents(Handler).new(handler)
-    stream = Pipewire::Stream.new(
-      main_loop,
+    stream = core.create_stream(
       "audio-src",
       {
         Pipewire::PropertyKey::MEDIA_TYPE     => "Audio",
         Pipewire::PropertyKey::MEDIA_CATEGORY => "Playback",
         Pipewire::PropertyKey::MEDIA_ROLE     => "Music",
-      },
-      stream_events
+      }
     )
+
+    stream.on_process do
+      p :hi
+    end
 
     positions = StaticArray(UInt32, Pipewire::LibSPA::MAX_CHANNELS).new { 0u32 }
     info = Pipewire::LibSPA::AudioInfoRaw.new(

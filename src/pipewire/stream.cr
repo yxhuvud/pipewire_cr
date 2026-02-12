@@ -26,6 +26,22 @@ module Pipewire
     alias Flag = LibPipewire::StreamFlag
     alias State = LibPipewire::StreamState
 
+    include EventListener
+
+    EVENT_LISTENER_VERSION = LibPipewire::VERSION_STREAM_EVENTS
+
+    event_listener destroy : -> Void
+    event_listener state_changed : LibPipewire::StreamState, LibPipewire::StreamState, String -> Void
+    event_listener control_info : UInt32, LibPipewire::StreamControl -> Void
+    event_listener io_changed : UInt32, Void*, UInt32 -> Void
+    event_listener param_changed : UInt32, LibSPA::Pod -> Void
+    event_listener add_buffer : LibPipewire::Buffer -> Void
+    event_listener remove_buffer : LibPipewire::Buffer -> Void
+    event_listener process : -> Void
+    event_listener drained : -> Void
+    event_listener command : LibSPA::Command -> Void
+    event_listener trigger_done : -> Void
+
     def connect(params : Array(Pipewire::LibSPA::Pod*),
                 direction : LibPipewire::Direction,
                 target : UInt32 = LibPipewire::ID_ANY,
@@ -37,26 +53,6 @@ module Pipewire
         flags,
         params,
         params.size)
-    end
-  end
-
-  class StreamEvents(T)
-    def initialize(@handler : T)
-      @stream_events = LibPipewire::StreamEvents.new(
-        version: 2,
-        process: process_proc
-      )
-    end
-
-    private def process_proc
-      Proc(Void*, Void).new do |data|
-        instance = data.as(T)
-        instance.process
-      end
-    end
-
-    def to_unsafe
-      pointerof(@stream_events)
     end
   end
 end
