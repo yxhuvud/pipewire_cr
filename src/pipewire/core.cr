@@ -1,5 +1,6 @@
 require "./registry"
 require "./event_listener"
+require "./stream"
 
 module Pipewire
   class Core < Base(LibPipewire::Core)
@@ -23,6 +24,10 @@ module Pipewire
 
     def sync(seq)
       LibPipewire.pw_core_sync(self, LibPipewire::ID_CORE, seq)
+    end
+
+    def create_stream(name, properties)
+      Stream.new(self, name, properties)
     end
 
     def finalize
