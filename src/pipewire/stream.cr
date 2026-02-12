@@ -1,3 +1,4 @@
+require "./buffer"
 require "./properties"
 require "./main_loop"
 
@@ -53,6 +54,14 @@ module Pipewire
         flags,
         params,
         params.size)
+    end
+
+    def dequeue_buffer
+      Buffer.new(Pipewire::LibPipewire.pw_stream_dequeue_buffer(self))
+    end
+
+    def queue_buffer(buffer)
+      Pipewire::LibPipewire.pw_stream_queue_buffer(self, buffer)
     end
   end
 end
