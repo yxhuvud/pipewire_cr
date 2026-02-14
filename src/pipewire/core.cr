@@ -26,7 +26,7 @@ module Pipewire
       LibPipewire.pw_core_sync(self, LibPipewire::ID_CORE, seq)
     end
 
-    def create_stream(name, properties)
+    def create_stream(name, properties) : Stream
       Stream.new(self, name, properties)
     end
 

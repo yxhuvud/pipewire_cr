@@ -40,7 +40,7 @@ module Pipewire
       LibPipewire.pw_main_loop_quit(self)
     end
 
-    def create_context(properties = nil, user_data_size = 0)
+    def create_context(properties = nil, user_data_size = 0) : Context
       Context.new(LibPipewire.pw_context_new(self.loop, properties, user_data_size))
     end
   end
