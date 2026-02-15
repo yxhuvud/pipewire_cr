@@ -45,15 +45,16 @@ module Pipewire
       end
     end
 
-    macro value_slice(name_type, size_name)
+    macro value_slice(name_type, size_name = nil)
       {% name = name_type.var %}
       {% value_type = name_type.type %}
+      {% size_name = size_name.nil? ? "n_#{name}" : size_name %}
       def {{ name }}
         {% if value_type.resolve <= parse_type("Pipewire::Base").resolve %}
           {% base_type = value_type.resolve.ancestors.find { |a| a.name(generic_args: false) == "Pipewire::Base" }.type_vars.first %}
           Pipewire::Base::Slice({{ value_type }}, {{ base_type }}).new(self.value.{{ name }}, self.value.{{ size_name.id }})
         {% else %}
-          self.value.{{ name }}.to_slice(self.value.{{ size_name }})
+          self.value.{{ name }}.to_slice(self.value.{{ size_name.id }})
         {% end %}
       end
     end
