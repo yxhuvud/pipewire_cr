@@ -1,3 +1,4 @@
+require "./spa/dict"
 require "./client"
 require "./node"
 
@@ -7,7 +8,7 @@ module Pipewire
 
     EVENT_LISTENER_VERSION = LibPipewire::VERSION_REGISTRY_EVENTS
 
-    event_listener global : UInt32, UInt32, String, UInt32, Pipewire::LibSPA::Dict -> Void
+    event_listener global : UInt32, UInt32, String, UInt32, SPA::Dict -> Void
     event_listener global_remove : UInt32 -> Void
 
     def bind_node(id, item_type) : Node
