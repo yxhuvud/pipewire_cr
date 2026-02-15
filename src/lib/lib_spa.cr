@@ -156,6 +156,74 @@ module Pipewire
       F64_OE    = F64_BE
     end
 
+    enum PodType
+      START     = 0x00000
+      None
+      Bool
+      Id
+      Int
+      Long
+      Float
+      Double
+      String
+      Bytes
+      Rectangle
+      Fraction
+      Bitmap
+      Array
+      Struct
+      Object
+      Sequence
+      Pointer
+      Fd
+      Choice
+      Pod
+    end
+
+    enum PodObjectType
+      START               = 0x40000
+      PropInfo
+      Props
+      Format
+      ParamBuffers
+      ParamMeta
+      ParamIO
+      ParamProfile
+      ParamPortConfig
+      ParamRoute
+      Profiler
+      ParamLatency
+      ParamProcessLatency
+      ParamTag
+      PeerParam
+      ParamDict
+    end
+
+    enum Choice
+      None
+      Range
+      Step
+      Enum
+      Flags
+    end
+
+    enum PropFlag
+      Readonly   = 1u32 << 0
+      Hardware   = 1u32 << 1
+      HintDict   = 1u32 << 2
+      Mandatory  = 1u32 << 3
+      DontFixate = 1u32 << 4
+      Drop       = 1u32 << 5
+    end
+
+    enum ControlType
+      Invalid
+      Properties
+      Midi
+      OSC
+      UMP
+    end
+
     struct DictItem
       key : LibC::Char*
       value : LibC::Char*
@@ -181,7 +249,145 @@ module Pipewire
 
     struct Pod
       size : UInt32
-      pod_type : UInt32
+      pod_type : PodType
+    end
+
+    struct PodBool
+      pod : Pod
+      value : Int32
+      _padding : Int32
+    end
+
+    struct PodId
+      pod : Pod
+      value : UInt32
+      _padding : Int32
+    end
+
+    struct PodInt
+      pod : Pod
+      value : Int32
+      _padding : Int32
+    end
+
+    struct PodLong
+      pod : Pod
+      value : Int64
+    end
+
+    struct PodFloat
+      pod : Pod
+      value : Float32
+      _padding : Int32
+    end
+
+    struct PodDouble
+      pod : Pod
+      value : Float64
+    end
+
+    struct PodString
+      pod : Pod
+    end
+
+    struct PodBytes
+      pod : Pod
+    end
+
+    struct Rectangle
+      width : UInt32
+      height : UInt32
+    end
+
+    struct PodRectangle
+      pod : Pod
+      value : Rectangle
+    end
+
+    struct Fraction
+      numerator : UInt32
+      denominator : UInt32
+    end
+
+    struct PodFraction
+      pod : Pod
+      value : Fraction
+    end
+
+    struct PodBitmap
+      pod : Pod
+    end
+
+    struct PodArrayBody
+      child : Pod
+    end
+
+    struct PodArray
+      pod : Pod
+      body : PodArrayBody
+    end
+
+    struct PodChoiceBody
+      type : UInt32
+      flags : UInt32
+      child : Pod
+    end
+
+    struct PodChoice
+      pod : Pod
+      body : PodChoiceBody
+    end
+
+    struct PodStruct
+      pod : Pod
+    end
+
+    struct PodObjectBody
+      type : PodObjectType
+      id : UInt32
+    end
+
+    struct PodObject
+      pod : Pod
+      body : PodObjectBody
+    end
+
+    struct PodPointerBody
+      type : PodType
+      _padding : UInt32
+      value : Void*
+    end
+
+    struct PodPointer
+      pod : Pod
+      body : PodPointerBody
+    end
+
+    struct PodFd
+      pod : Pod
+      value : Int64
+    end
+
+    struct PodProp
+      key : UInt32
+      flags : PropFlag
+      value : Pod
+    end
+
+    struct PodControl
+      offset : UInt32
+      type : ControlType
+      value : Pod
+    end
+
+    struct PodSequenceBody
+      unit : UInt32
+      pad : UInt32
+    end
+
+    struct PodSequence
+      pod : Pod
+      body : PodSequenceBody
     end
 
     struct PodFrame
@@ -238,11 +444,6 @@ module Pipewire
       n_datas : UInt32
       metas : Meta*
       datas : Data*
-    end
-
-    struct PodObjectBody
-      object_type : UInt32
-      id : UInt32
     end
 
     struct CommandBody
