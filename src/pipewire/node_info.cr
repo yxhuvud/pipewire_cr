@@ -14,6 +14,6 @@ module Pipewire
     value_getter state : State
     value_getter error : String
     value_getter properties : SPA::Dict
-    value_slice params, n_params
+    value_slice params : LibSPA::ParamInfo, n_params
   end
 end
