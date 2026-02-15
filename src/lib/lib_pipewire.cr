@@ -84,7 +84,7 @@ module Pipewire
     struct NodeEvents
       version : UInt32
       info : Void*, NodeInfo* -> Void
-      param : Void*, Int32, UInt32, UInt32, UInt32, LibSPA::Pod* -> Void
+      param : Void*, Int32, LibSPA::ParamType, UInt32, UInt32, LibSPA::Pod* -> Void
     end
 
     struct StreamControl

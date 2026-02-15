@@ -8,7 +8,7 @@ module Pipewire
     EVENT_LISTENER_VERSION = LibPipewire::VERSION_NODE_EVENTS
 
     event_listener info : NodeInfo -> Void
-    event_listener param : Int32, UInt32, UInt32, UInt32, LibSPA::Pod -> Void
+    event_listener param : Int32, LibSPA::ParamType, UInt32, UInt32, LibSPA::Pod -> Void
 
     def subscribe_params(ids : Array(Pipewire::LibSPA::ParamType))
       LibPipewire.pw_node_subscribe_params(self, ids.map(&.to_i.to_u), ids.size)
