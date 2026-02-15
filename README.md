@@ -36,4 +36,5 @@ TODO: Write development instructions here
 
 ## Contributors
 
-- [Linus Sellberg](https://github.com/your-github-user) - creator and maintainer
+- [Linus Sellberg](https://github.com/your-github-user) - creator
+- [expeehaa](<expeehaa@outlook.com>)
