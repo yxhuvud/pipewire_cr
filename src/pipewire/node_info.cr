@@ -1,5 +1,6 @@
 require "../lib/lib_pipewire"
 require "./spa/dict"
+require "./spa/param_info"
 
 module Pipewire
   class NodeInfo < Base(LibPipewire::NodeInfo)
@@ -14,6 +15,6 @@ module Pipewire
     value_getter state : State
     value_getter error : String
     value_getter properties : SPA::Dict
-    value_slice params : LibSPA::ParamInfo
+    value_slice params : SPA::ParamInfo
   end
 end
