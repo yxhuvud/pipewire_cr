@@ -1,4 +1,5 @@
 require "./spa/buffer"
+require "../lib/lib_pipewire"
 
 module Pipewire
   class Buffer < Base(LibPipewire::Buffer)

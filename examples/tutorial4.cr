@@ -18,21 +18,20 @@ accumulator = 0f64
 
 listener = stream.on_process do
   b = stream.dequeue_buffer
-
-  if !b.value?
+  if b.value?
     buf = b.buffer
     ptr = buf.datas[0].data
 
     stride = sizeof(Int16)*CHANNELS
-    n_frames = buf.datas[0].maxsize//stride
+    n_frames = buf.datas[0].maxsize // stride
     if b.requested != 0
       n_frames = [b.requested, n_frames].min
     end
 
     n_frames.times do
-      accumulator += 2*Math::PI * 440 / RATE
-      if accumulator >= 2*Math::PI
-        accumulator -= 2*Math::PI
+      accumulator += 2 * Math::PI * 440 / RATE
+      if accumulator >= 2 * Math::PI
+        accumulator -= 2 * Math::PI
       end
       val = (Math.sin(accumulator) * VOLUME * 32767.0).to_i16
       CHANNELS.times do

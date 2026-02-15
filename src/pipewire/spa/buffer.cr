@@ -1,4 +1,5 @@
 require "../base"
+require "../../lib/lib_spa"
 
 module Pipewire
   module SPA
