@@ -22,7 +22,6 @@ module Pipewire
       event_loop = Crystal::EventLoop.current
 
       loop do
-        p :a
         event_loop.wait_readable(file)
         res = LibPipewire.pw_loop_iterate(loop, 0)
         # positive = fds polled, so not interesting
