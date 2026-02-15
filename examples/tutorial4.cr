@@ -28,15 +28,14 @@ listener = stream.on_process do
       n_frames = [b.requested, n_frames].min
     end
 
-    n_frames.times do
+    n_frames.times do |i|
       accumulator += 2 * Math::PI * 440 / RATE
       if accumulator >= 2 * Math::PI
         accumulator -= 2 * Math::PI
       end
       val = (Math.sin(accumulator) * VOLUME * 32767.0).to_i16
-      CHANNELS.times do
-        ptr.as(Pointer(Int16)).value = val
-        ptr += 1
+      CHANNELS.times do |c|
+        ptr.as(Pointer(Int16))[i*CHANNELS+c] = val
       end
     end
 
