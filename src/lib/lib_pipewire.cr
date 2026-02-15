@@ -7,8 +7,10 @@ module Pipewire
     VERSION_REGISTRY_EVENTS = 0
     VERSION_NODE_EVENTS     = 0
     VERSION_STREAM_EVENTS   = 2
+    VERSION_CLIENT_EVENTS   = 0
     VERSION_REGISTRY        = 3
     VERSION_NODE            = 3
+    VERSION_CLIENT          = 3
 
     NODE_EVENT_PARAM = 1
 
@@ -56,6 +58,7 @@ module Pipewire
     type Registry = Void
     type Proxy = Void
     type Node = Void
+    type Client = Void
 
     alias Direction = LibSPA::Direction
 
@@ -145,6 +148,23 @@ module Pipewire
       bound_props : Void*, UInt32, UInt32, LibSPA::Dict* -> Void
     end
 
+    struct ClientInfo
+      id : UInt32
+      change_mask : UInt64
+      properties : LibSPA::Dict*
+    end
+
+    struct Permissions
+      id : UInt32
+      permissions : UInt32
+    end
+
+    struct ClientEvents
+      version : UInt32
+      info : Void*, ClientInfo* -> Void
+      permissions : Void*, UInt32, UInt32, Permissions* -> Void
+    end
+
     fun pw_init(argc : LibC::Int*, argv : LibC::Char**) : Void
 
     fun pw_get_headers_version = pw_get_headers_version_shim : LibC::Char*
@@ -177,6 +197,7 @@ module Pipewire
     fun pw_properties_new_dict(dict : LibSPA::Dict*) : Properties*
     fun pw_stream_connect(stream : Stream*, direction : Direction, target_id : UInt32, flags : StreamFlag, params : LibSPA::Pod**, n_params : UInt32) : LibC::Int
     fun pw_stream_destroy(stream : Stream*) : Void
+    fun pw_client_add_listener(client : Client*, listener : LibSPA::Hook*, events : ClientEvents*, data : Void*) : LibC::Int
     fun pw_proxy_destroy(proxy : Proxy*) : Void
 
     fun pw_loop_enter = pw_loop_enter_shim(loop : Loop*) : Void

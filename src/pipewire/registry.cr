@@ -1,3 +1,4 @@
+require "./client"
 require "./node"
 
 module Pipewire
@@ -11,6 +12,10 @@ module Pipewire
 
     def bind_node(id, item_type) : Node
       Node.new(LibPipewire.pw_registry_bind(self, id, item_type, LibPipewire::VERSION_NODE, 0).as(LibPipewire::Node*))
+    end
+
+    def bind_client(id, item_type) : Client
+      Client.new(LibPipewire.pw_registry_bind(self, id, item_type, LibPipewire::VERSION_CLIENT, 0).as(LibPipewire::Client*))
     end
 
     def finalize
