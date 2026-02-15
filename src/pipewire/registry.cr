@@ -1,6 +1,4 @@
-require "../lib/lib_pipewire"
-require "./base"
-require "./event_listener"
+require "./node"
 
 module Pipewire
   class Registry < Base(LibPipewire::Registry)
@@ -10,6 +8,10 @@ module Pipewire
 
     event_listener global : UInt32, UInt32, String, UInt32, Pipewire::LibSPA::Dict -> Void
     event_listener global_remove : UInt32 -> Void
+
+    def bind_node(id, item_type) : Node
+      Node.new(LibPipewire.pw_registry_bind(self, id, item_type, LibPipewire::VERSION_NODE, 0).as(LibPipewire::Node*))
+    end
 
     def finalize
       LibPipewire.pw_proxy_destroy(self.to_unsafe.as(Pointer(LibPipewire::Proxy)))

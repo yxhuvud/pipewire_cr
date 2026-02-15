@@ -262,6 +262,14 @@ module Pipewire
       position : UInt32[MAX_CHANNELS]
     end
 
+    struct ParamInfo
+      id : ParamType
+      flags : UInt32
+      user : UInt32
+      seq : Int32
+      padding : UInt32[4]
+    end
+
     fun spa_pod_builder_push_object = spa_pod_builder_push_object_shim(builder : PodBuilder*, frame : PodFrame*, type : UInt32, id : UInt32) : Int32
     fun spa_pod_builder_prop = spa_pod_builder_prop_shim(builder : PodBuilder*, key : UInt32, flags : UInt32) : Int32
     fun spa_pod_get_array_values = spa_pod_get_array_values_shim(pod : Pod*, n_values : UInt32*) : Void*

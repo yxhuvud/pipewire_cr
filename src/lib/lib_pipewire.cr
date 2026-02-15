@@ -40,6 +40,14 @@ module Pipewire
       Streaming
     end
 
+    enum NodeState
+      PW_NODE_STATE_ERROR     = -1
+      PW_NODE_STATE_CREATING  =  0
+      PW_NODE_STATE_SUSPENDED =  1
+      PW_NODE_STATE_IDLE      =  2
+      PW_NODE_STATE_RUNNING   =  3
+    end
+
     type Loop = Void
     type MainLoop = Void
     type Stream = Void
@@ -48,13 +56,26 @@ module Pipewire
     type Registry = Void
     type Proxy = Void
     type Node = Void
-    type NodeInfo = Void
 
     alias Direction = LibSPA::Direction
 
     struct Properties
       dict : LibSPA::Dict
       flags : UInt32
+    end
+
+    struct NodeInfo
+      id : UInt32
+      max_input_ports : UInt32
+      max_output_ports : UInt32
+      change_mask : UInt64
+      n_input_ports : UInt32
+      n_output_ports : UInt32
+      state : NodeState
+      error : LibC::Char*
+      properties : LibSPA::Dict*
+      params : LibSPA::ParamInfo*
+      n_params : UInt32
     end
 
     struct NodeEvents
