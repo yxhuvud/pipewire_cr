@@ -35,7 +35,7 @@ listener = stream.on_process do
       end
       val = (Math.sin(accumulator) * VOLUME * 32767.0).to_i16
       CHANNELS.times do |c|
-        ptr.as(Pointer(Int16))[i*CHANNELS+c] = val
+        ptr.as(Pointer(Int16))[i*CHANNELS + c] = val
       end
     end
 
