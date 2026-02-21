@@ -25,7 +25,7 @@ listener = stream.on_process do
     stride = sizeof(Int16)*CHANNELS
     n_frames = buf.datas[0].maxsize // stride
     if b.requested != 0
-      n_frames = [b.requested, n_frames].min
+      n_frames = {b.requested, n_frames}.min
     end
 
     n_frames.times do |i|
