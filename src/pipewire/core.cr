@@ -1,3 +1,4 @@
+require "./spa/dict"
 require "./registry"
 require "./event_listener"
 require "./stream"
@@ -16,7 +17,7 @@ module Pipewire
     event_listener bound_id : UInt32, UInt32 -> Void
     event_listener add_mem : UInt32, UInt32, LibC::Int, UInt32 -> Void
     event_listener remove_mem : UInt32 -> Void
-    event_listener bound_props : UInt32, UInt32, LibSPA::Dict -> Void
+    event_listener bound_props : UInt32, UInt32, SPA::Dict -> Void
 
     def registry
       Registry.new(LibPipewire.pw_core_get_registry(self, LibPipewire::VERSION_REGISTRY, 0))
