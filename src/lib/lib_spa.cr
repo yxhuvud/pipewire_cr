@@ -3,6 +3,7 @@ module Pipewire
   lib LibSPA
     MAX_CHANNELS =         64
     ID_INVALID   = 0xffffffff
+    POD_ALIGN    =          8
 
     @[Flags]
     enum PodBuilderFlag
