@@ -1,8 +1,6 @@
-require "./lib/lib_pipewire"
 require "./pipewire/spa/pod_builder"
 require "./pipewire/audio_format"
 require "./pipewire/stream"
-require "./pipewire/context"
 
 module Pipewire
   VERSION = "0.1.0"
