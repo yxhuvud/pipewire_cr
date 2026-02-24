@@ -168,6 +168,7 @@ module Pipewire
     fun pw_node_add_listener(object : Node*, listener : LibSPA::Hook*, events : NodeEvents*, data : Void*) : LibC::Int
     fun pw_node_set_param(object : Node*, id : UInt32, flags : UInt32, param : LibSPA::Pod*) : LibC::Int
     fun pw_node_subscribe_params(object : Node*, ids : LibSPA::ParamType*, n_ids : UInt32) : LibC::Int
+    fun pw_node_enum_params(object : Node*, seq : LibC::Int, id : LibSPA::ParamType, start : UInt32, num : UInt32, filter : LibSPA::Pod*) : LibC::Int
     fun pw_stream_new(core : Core*, name : LibC::Char*, properties : Properties*) : Stream*
     fun pw_stream_new_simple(loop : Loop*, name : LibC::Char*, properties : Properties*, stream_events : StreamEvents*, user_data : Void*) : Stream*
     fun pw_stream_add_listener(stream : Stream*, listener : LibSPA::Hook*, events : StreamEvents*, data : Void*) : LibC::Int

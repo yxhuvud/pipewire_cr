@@ -15,6 +15,10 @@ module Pipewire
       LibPipewire.pw_node_subscribe_params(self, ids, ids.size)
     end
 
+    def enum_params(seq, id, start, num, filter)
+      LibPipewire.pw_node_enum_params(self, seq, id, start, num, filter)
+    end
+
     def finalize
       LibPipewire.pw_proxy_destroy(self.to_unsafe.as(Pointer(LibPipewire::Proxy)))
     end
