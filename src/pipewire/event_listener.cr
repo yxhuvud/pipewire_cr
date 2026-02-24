@@ -23,7 +23,7 @@ module Pipewire
             {{ callback_name }}: ->(data : Void*,
               {% for unresolved_type, i in callback_type.inputs %}
                 {% t = unresolved_type.resolve %}
-                arg{{ i }} : {% if t.name.starts_with?("Pipewire::LibPipewire::") || t.name.starts_with?("Pipewire::LibSPA::") %}
+                arg{{ i }} : {% if (t.name.starts_with?("Pipewire::LibPipewire::") || t.name.starts_with?("Pipewire::LibSPA::")) && !(t <= Enum) %}
                     {{ t }}*,
                   {% elsif t <= parse_type("Pipewire::Base").resolve %}
                     {{ t.ancestors.find { |a| a.name(generic_args: false) == "Pipewire::Base" }.type_vars.first }}*,
@@ -38,7 +38,7 @@ module Pipewire
             cb.call(
               {% for unresolved_type, i in callback_type.inputs %}
                 {% t = unresolved_type.resolve %}
-                {% if t.name.starts_with?("Pipewire::LibPipewire::") || t.name.starts_with?("Pipewire::LibSPA::") %}
+                {% if (t.name.starts_with?("Pipewire::LibPipewire::") || t.name.starts_with?("Pipewire::LibSPA::")) && !(t <= Enum) %}
                   arg{{ i }}.value,
                 {% elsif t <= parse_type("Pipewire::Base").resolve %}
                   {{ t }}.new(arg{{ i }}),

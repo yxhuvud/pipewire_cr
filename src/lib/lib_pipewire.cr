@@ -40,6 +40,14 @@ module Pipewire
       Streaming
     end
 
+    enum NodeState
+      PW_NODE_STATE_ERROR     = -1
+      PW_NODE_STATE_CREATING  =  0
+      PW_NODE_STATE_SUSPENDED =  1
+      PW_NODE_STATE_IDLE      =  2
+      PW_NODE_STATE_RUNNING   =  3
+    end
+
     type Loop = Void
     type MainLoop = Void
     type Stream = Void
@@ -48,7 +56,6 @@ module Pipewire
     type Registry = Void
     type Proxy = Void
     type Node = Void
-    type NodeInfo = Void
 
     alias Direction = LibSPA::Direction
 
@@ -57,10 +64,24 @@ module Pipewire
       flags : UInt32
     end
 
+    struct NodeInfo
+      id : UInt32
+      max_input_ports : UInt32
+      max_output_ports : UInt32
+      change_mask : UInt64
+      n_input_ports : UInt32
+      n_output_ports : UInt32
+      state : NodeState
+      error : LibC::Char*
+      properties : LibSPA::Dict*
+      params : LibSPA::ParamInfo*
+      n_params : UInt32
+    end
+
     struct NodeEvents
       version : UInt32
       info : Void*, NodeInfo* -> Void
-      param : Void*, Int32, UInt32, UInt32, UInt32, LibSPA::Pod* -> Void
+      param : Void*, Int32, LibSPA::ParamType, UInt32, UInt32, LibSPA::Pod* -> Void # The Pipewire headers want the third argument to be of type uint32_t, but the value appears to actually be from the spa_param_type enum.
     end
 
     struct StreamControl

@@ -533,6 +533,14 @@ module Pipewire
       position : UInt32[MAX_CHANNELS]
     end
 
+    struct ParamInfo
+      id : ParamType
+      flags : UInt32
+      user : UInt32
+      seq : Int32
+      padding : UInt32[4]
+    end
+
     struct TypeInfo
       type : UInt32
       parent : UInt32
