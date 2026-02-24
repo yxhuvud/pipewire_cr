@@ -1,4 +1,5 @@
 require "./pipewire/spa/pod_builder"
+require "./pipewire/spa/type_info"
 require "./pipewire/audio_format"
 require "./pipewire/stream"
 

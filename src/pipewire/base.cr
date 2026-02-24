@@ -19,6 +19,8 @@ module Pipewire
       def {{ name }}
         {% if value_type.resolve <= parse_type("Pipewire::Base").resolve %}
           {{ value_type }}.new(self.value.{{ name }})
+        {% elsif value_type.resolve == String %}
+          String.new(self.value.{{ name }})
         {% else %}
           self.value.{{ name }}
         {% end %}

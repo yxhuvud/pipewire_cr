@@ -1,7 +1,8 @@
 module Pipewire
   @[Link("pipewire-0.3", ldflags: "#{__DIR__}/../../build/shim_spa.o")]
   lib LibSPA
-    MAX_CHANNELS = 64
+    MAX_CHANNELS =         64
+    ID_INVALID   = 0xffffffff
 
     @[Flags]
     enum PodBuilderFlag
@@ -262,6 +263,13 @@ module Pipewire
       position : UInt32[MAX_CHANNELS]
     end
 
+    struct TypeInfo
+      type : UInt32
+      parent : UInt32
+      name : LibC::Char*
+      values : TypeInfo*
+    end
+
     fun spa_pod_builder_push_object = spa_pod_builder_push_object_shim(builder : PodBuilder*, frame : PodFrame*, type : UInt32, id : UInt32) : Int32
     fun spa_pod_builder_prop = spa_pod_builder_prop_shim(builder : PodBuilder*, key : UInt32, flags : UInt32) : Int32
     fun spa_pod_get_array_values = spa_pod_get_array_values_shim(pod : Pod*, n_values : UInt32*) : Void*
@@ -274,5 +282,7 @@ module Pipewire
     ) : Pod*
 
     fun spa_hook_remove = spa_hook_remove_shim(hook : Hook*) : Void
+
+    fun spa_shim_type_root : TypeInfo*
   end
 end

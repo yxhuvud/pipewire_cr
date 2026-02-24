@@ -1,5 +1,6 @@
 #include <spa/pod/builder.h>
 #include <spa/param/audio/format-utils.h>
+#include <spa/utils/type-info.h>
 
 struct spa_pod * spa_format_audio_raw_build_shim(struct spa_pod_builder * builder, uint32_t id, struct spa_audio_info_raw * info) {
   return spa_format_audio_raw_build(builder, id, info);
@@ -19,4 +20,8 @@ int spa_pod_builder_prop_shim(struct spa_pod_builder *builder, uint32_t key, uin
 
 void spa_hook_remove_shim(struct spa_hook *hook) {
   return spa_hook_remove(hook);
+}
+
+const struct spa_type_info * spa_shim_type_root() {
+  return SPA_TYPE_ROOT;
 }
