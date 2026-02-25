@@ -58,6 +58,10 @@ module Pipewire
           @host.event_listeners_{{ callback_name }}.delete(self)
           ::Pipewire::LibSPA.spa_hook_remove(pointerof(@hook))
         end
+
+        def finalize
+          ::Pipewire::LibSPA.spa_hook_remove(pointerof(@hook))
+        end
       end
     end
   end

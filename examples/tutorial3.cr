@@ -13,7 +13,7 @@ end
 
 pending = core.sync(0)
 
-listener = core.on_done do |id, seq|
+core.on_done do |id, seq|
   if id == Pipewire::LibPipewire::ID_CORE && seq == pending
     main_loop.quit
   end
@@ -22,5 +22,3 @@ end
 if (err = main_loop.run) < 0
   puts "main_loop_run error: #{err}"
 end
-
-listener.remove
