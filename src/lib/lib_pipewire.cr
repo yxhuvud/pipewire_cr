@@ -208,6 +208,7 @@ module Pipewire
     fun pw_properties_new(key : LibC::Char*, ...) : Properties*
     fun pw_properties_new_string(object : LibC::Char*) : Properties*
     fun pw_properties_new_dict(dict : LibSPA::Dict*) : Properties*
+    fun pw_properties_free(properties : Properties*) : Void
     fun pw_stream_connect(stream : Stream*, direction : Direction, target_id : UInt32, flags : StreamFlag, params : LibSPA::Pod**, n_params : UInt32) : LibC::Int
     fun pw_stream_destroy(stream : Stream*) : Void
     fun pw_client_add_listener(client : Client*, listener : LibSPA::Hook*, events : ClientEvents*, data : Void*) : LibC::Int

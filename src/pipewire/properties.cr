@@ -11,5 +11,9 @@ module Pipewire
 
       @pointer = LibPipewire.pw_properties_new_dict(pointerof(dict))
     end
+
+    def finalize
+      LibPipewire.pw_properties_free(self)
+    end
   end
 end
