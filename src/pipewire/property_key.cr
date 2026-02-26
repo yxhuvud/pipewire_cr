@@ -192,5 +192,7 @@ module Pipewire
     VIDEO_FORMAT                 = new("video.format")
     VIDEO_SIZE                   = new("video.size")
     TARGET_OBJECT                = new("target.object")
+    METADATA_NAME                = new("metadata.name")
+    METADATA_VALUES              = new("metadata.values")
   end
 end

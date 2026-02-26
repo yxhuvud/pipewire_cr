@@ -1,6 +1,7 @@
 require "./spa/dict"
 require "./client"
 require "./node"
+require "./metadata"
 
 module Pipewire
   class Registry < Base(LibPipewire::Registry)
@@ -17,6 +18,10 @@ module Pipewire
 
     def bind_client(id, item_type) : Client
       Client.new(LibPipewire.pw_registry_bind(self, id, item_type, LibPipewire::VERSION_CLIENT, 0).as(LibPipewire::Client*))
+    end
+
+    def bind_metadata(id, item_type) : Metadata
+      Metadata.new(LibPipewire.pw_registry_bind(self, id, item_type, LibPipewire::VERSION_METADATA, 0).as(LibPipewire::Metadata*))
     end
 
     def finalize

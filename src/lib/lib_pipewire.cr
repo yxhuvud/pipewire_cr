@@ -8,9 +8,11 @@ module Pipewire
     VERSION_NODE_EVENTS     = 0
     VERSION_STREAM_EVENTS   = 2
     VERSION_CLIENT_EVENTS   = 0
+    VERSION_METADATA_EVENTS = 0
     VERSION_REGISTRY        = 3
     VERSION_NODE            = 3
     VERSION_CLIENT          = 3
+    VERSION_METADATA        = 3
 
     NODE_EVENT_PARAM = 1
 
@@ -59,6 +61,7 @@ module Pipewire
     type Proxy = Void
     type Node = Void
     type Client = Void
+    type Metadata = Void
 
     alias Direction = LibSPA::Direction
 
@@ -165,6 +168,11 @@ module Pipewire
       permissions : Void*, UInt32, UInt32, Permissions* -> Void
     end
 
+    struct MetadataEvents
+      version : UInt32
+      property : Void*, UInt32, LibC::Char*, LibC::Char*, LibC::Char* -> LibC::Int
+    end
+
     fun pw_init(argc : LibC::Int*, argv : LibC::Char**) : Void
 
     fun pw_get_headers_version = pw_get_headers_version_shim : LibC::Char*
@@ -185,6 +193,9 @@ module Pipewire
     fun pw_core_disconnect(core : Core*) : LibC::Int
     fun pw_registry_add_listener(registry : Registry*, listener : LibSPA::Hook*, events : RegistryEvents*, data : Void*) : LibC::Int
     fun pw_registry_bind(registry : Registry*, id : UInt32, type : LibC::Char*, version : UInt32, user_data_size : LibC::SizeT) : Void*
+    fun pw_metadata_add_listener = pw_metadata_add_listener_shim(metadata : Metadata*, listener : LibSPA::Hook*, events : MetadataEvents*, data : Void*) : LibC::Int
+    fun pw_metadata_set_property = pw_metadata_set_property_shim(metadata : Metadata*, subject : UInt32, key : LibC::Char*, type : LibC::Char*, value : LibC::Char*) : LibC::Int
+    fun pw_metadata_clear = pw_metadata_clear_shim(metadata : Metadata*) : LibC::Int
     fun pw_node_add_listener(object : Node*, listener : LibSPA::Hook*, events : NodeEvents*, data : Void*) : LibC::Int
     fun pw_node_set_param(object : Node*, id : UInt32, flags : UInt32, param : LibSPA::Pod*) : LibC::Int
     fun pw_node_subscribe_params(object : Node*, ids : LibSPA::ParamType*, n_ids : UInt32) : LibC::Int
