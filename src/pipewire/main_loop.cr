@@ -3,8 +3,12 @@ require "./context"
 
 module Pipewire
   class MainLoop < Base(LibPipewire::MainLoop)
+    def initialize(@pointer : LibPipewire::MainLoop*)
+      super(@pointer)
+    end
+
     def initialize
-      @pointer = LibPipewire.pw_main_loop_new(nil)
+      super(LibPipewire.pw_main_loop_new(nil))
     end
 
     def loop

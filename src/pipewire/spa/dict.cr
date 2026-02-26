@@ -8,6 +8,7 @@ module Pipewire
       include Indexable(Tuple(String, String))
 
       def initialize(@pointer : LibSPA::Dict*)
+        super(@pointer)
       end
 
       private def slice

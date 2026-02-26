@@ -1,8 +1,13 @@
+require "./null_pointer_error"
+
 module Pipewire
   abstract class Base(T)
     @pointer : T*
 
     def initialize(@pointer : T*)
+      if @pointer.null?
+        raise NullPointerError.new
+      end
     end
 
     def value?
