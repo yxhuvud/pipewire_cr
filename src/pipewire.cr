@@ -12,4 +12,12 @@ module Pipewire
     args = [name.to_unsafe]
     LibPipewire.pw_init(pointerof(SIZE), args.to_unsafe)
   end
+
+  def self.headers_version
+    String.new(LibPipewire.pw_get_headers_version)
+  end
+
+  def self.library_version
+    String.new(LibPipewire.pw_get_library_version)
+  end
 end
