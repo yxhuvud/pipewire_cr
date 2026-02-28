@@ -55,7 +55,7 @@ module Pipewire
     macro value_slice(name_type, size_name = nil)
       {% name = name_type.var %}
       {% value_type = name_type.type %}
-      {% size_name = size_name.nil? ? "n_#{name}" : size_name %}
+      {% size_name ||= "n_#{name}" %}
       def {{ name }}
         {% if value_type.resolve <= parse_type("Pipewire::Base").resolve %}
           {% base_type = value_type.resolve.ancestors.find { |a| a.name(generic_args: false) == "Pipewire::Base" }.type_vars.first %}
