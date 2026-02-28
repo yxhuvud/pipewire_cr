@@ -51,7 +51,7 @@ module Pipewire
       end
 
       def each(&)
-        self.size.times do |index|
+        size.times do |index|
           yield TypeInfo.new(self.to_unsafe + index)
         end
       end
