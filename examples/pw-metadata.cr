@@ -43,9 +43,11 @@ opt_type = ARGV[3]?
 
 main_loop = Pipewire::MainLoop.new
 context = main_loop.create_context
-core = context.connect(Pipewire::Properties.new(opt_remote_name.nil? ? Hash(Pipewire::PropertyKey, String).new : {
-  Pipewire::PropertyKey::REMOTE_NAME => opt_remote_name.not_nil!,
-}))
+core = context.connect(
+  {
+    Pipewire::PropertyKey::REMOTE_NAME => opt_remote_name,
+  }.compact
+)
 
 sync = 0
 
