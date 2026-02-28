@@ -30,6 +30,7 @@ module Pipewire
       include Indexable(TypeInfo)
 
       def initialize(@pointer : LibSPA::TypeInfo*)
+        @size = 0 unless @pointer
       end
 
       def self.root
@@ -40,14 +41,12 @@ module Pipewire
 
       def size : Int32
         @size ||=
-          if !self.to_unsafe.null?
+          begin
             elements = 0
-            while !self.to_unsafe[elements].name.null?
+            while to_unsafe[elements].name
               elements += 1
             end
             elements
-          else
-            0
           end
       end
 
