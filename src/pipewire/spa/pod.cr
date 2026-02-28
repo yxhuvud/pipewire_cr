@@ -82,7 +82,7 @@ module Pipewire
         when LibSPA::PodType::String
           char_pointer = body.as(LibC::Char*)
           if size > 0 && char_pointer[size - 1] == 0
-            String.new(body.as(LibC::Char*))
+            String.new(char_pointer)
           else
             nil
           end
