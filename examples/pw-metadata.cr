@@ -86,20 +86,20 @@ registry.on_global do |object_id, permissions, item_type, version, properties|
           cached_metadata = metadata
 
           if opt_delete
-            if !opt_id.nil?
-              if !opt_key.nil?
+            if opt_id
+              if opt_key
+                metadata.set_property(opt_id, opt_key, nil, nil)
                 puts "delete property: id:#{opt_id} key: #{opt_key}"
               else
                 puts "delete properties: id:#{opt_id}"
               end
-              metadata.set_property(opt_id.not_nil!, opt_key.not_nil!, nil, nil)
             else
               puts "delete all properties"
               metadata.clear
             end
-          elsif !opt_id.nil? && !opt_key.nil? && !opt_value.nil?
+          elsif opt_id && opt_key && !opt_value.nil?
             puts "set property: id:#{opt_id} key:#{opt_key} value:#{opt_value} type:#{opt_type}"
-            metadata.set_property(opt_id.not_nil!, opt_key.not_nil!, opt_type || "", opt_value.not_nil!)
+            metadata.set_property(opt_id, opt_key, opt_type || "", opt_value.not_nil!)
           else
             metadata.on_property do |md_id, md_key, md_type, md_value|
               if !opt_list && (opt_id.nil? || opt_id == md_id) && (opt_key.nil? || opt_key == md_key)
