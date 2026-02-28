@@ -1,4 +1,4 @@
 module Pipewire
-  class NullPointerError < Exception
+  class NullPointerError < ArgumentError
   end
 end
