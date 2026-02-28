@@ -58,4 +58,16 @@ describe Pipewire::SPA::TypeInfo do
       Pipewire::SPA::TypeInfoList.root[1].short_name.should eq "None"
     end
   end
+
+  describe "#valid_id?" do
+    it "is false if type is valid" do
+      Pipewire::SPA::TypeInfoList.root[1].valid_id?.should eq true
+    end
+
+    it "returns a shortened name" do
+      typeinfo = Pipewire::LibSPA::TypeInfo.new(type: Pipewire::LibSPA::ID_INVALID)
+      info = Pipewire::SPA::TypeInfo.new(pointerof(typeinfo))
+      info.valid_id?.should eq false
+    end
+  end
 end

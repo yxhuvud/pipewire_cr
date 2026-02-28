@@ -12,6 +12,10 @@ module Pipewire
       value_getter name : String
       value_getter values : TypeInfoList
 
+      def valid_id?
+        type != LibSPA::ID_INVALID
+      end
+
       def short_name
         self.name.split(':')[-1]
       end
@@ -58,14 +62,10 @@ module Pipewire
       end
 
       def find_type(type : UInt32)
-        self.find do |type_info|
-          if type_info.type == LibSPA::ID_INVALID
-            if (result = type_info.values.find_type(type))
-              return result
-            end
-          elsif type_info.type == type
-            true
-          end
+        find do |type_info|
+          next type_info.type == type if type_info.valid_id?
+
+          type_info.values.find_type(type)
         end
       end
     end
