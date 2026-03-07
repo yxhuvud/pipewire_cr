@@ -62,6 +62,7 @@ module Pipewire
     type Node = Void
     type Client = Void
     type Metadata = Void
+    type ThreadLoop = Void
 
     alias Direction = LibSPA::Direction
 
@@ -205,6 +206,14 @@ module Pipewire
     fun pw_stream_add_listener(stream : Stream*, listener : LibSPA::Hook*, events : StreamEvents*, data : Void*) : LibC::Int
     fun pw_stream_dequeue_buffer(stream : Stream*) : Buffer*
     fun pw_stream_queue_buffer(stream : Stream*, buffer : Buffer*) : LibC::Int
+    fun pw_thread_loop_new(name : LibC::Char*, properties : LibSPA::Dict*) : ThreadLoop*
+    fun pw_thread_loop_get_loop(thread_loop : ThreadLoop*) : Loop*
+    fun pw_thread_loop_start(thread_loop : ThreadLoop*) : LibC::Int
+    fun pw_thread_loop_stop(thread_loop : ThreadLoop*) : Void
+    fun pw_thread_loop_lock(thread_loop : ThreadLoop*) : Void
+    fun pw_thread_loop_unlock(thread_loop : ThreadLoop*) : Void
+    fun pw_thread_loop_wait(thread_loop : ThreadLoop*) : Void
+    fun pw_thread_loop_destroy(thread_loop : ThreadLoop*) : Void
     fun pw_properties_new(key : LibC::Char*, ...) : Properties*
     fun pw_properties_new_string(object : LibC::Char*) : Properties*
     fun pw_properties_new_dict(dict : LibSPA::Dict*) : Properties*

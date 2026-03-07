@@ -2,6 +2,7 @@ require "./pipewire/spa/pod_builder"
 require "./pipewire/spa/type_info"
 require "./pipewire/audio_format"
 require "./pipewire/stream"
+require "./pipewire/thread_loop"
 
 module Pipewire
   VERSION = "0.1.0"
