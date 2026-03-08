@@ -228,5 +228,6 @@ module Pipewire
     @[Raises]
     fun pw_loop_iterate = pw_loop_iterate_shim(loop : Loop*, timeout : LibC::Int) : LibC::Int
     fun pw_loop_get_fd = pw_loop_get_fd_shim(loop : Loop*) : LibC::Int
+    fun pw_loop_destroy(loop : Loop*) : Void
   end
 end

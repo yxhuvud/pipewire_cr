@@ -1,5 +1,5 @@
 require "../lib/lib_pipewire"
-require "./context"
+require "./loop"
 
 module Pipewire
   class ThreadLoop < Base(LibPipewire::ThreadLoop)
@@ -11,9 +11,9 @@ module Pipewire
       super(LibPipewire.pw_thread_loop_new(name, nil))
     end
 
-    def loop
-      LibPipewire.pw_thread_loop_get_loop(self)
-    end
+    getter(loop : Loop) { Loop.new(LibPipewire.pw_main_loop_get_loop(self), false) }
+
+    delegate create_context, to: loop
 
     def finalize
       stop
@@ -45,10 +45,6 @@ module Pipewire
 
     def unlock
       LibPipewire.pw_thread_loop_unlock(self)
-    end
-
-    def create_context(properties = nil, user_data_size = 0) : Context
-      Context.new(LibPipewire.pw_context_new(loop, properties, user_data_size))
     end
   end
 end
