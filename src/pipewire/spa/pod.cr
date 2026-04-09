@@ -1,10 +1,18 @@
 require "./type_info"
+require "./pod_factory"
 
 module Pipewire
   module SPA
     class Pod < Base(LibSPA::Pod)
       value_getter size : UInt32
       value_getter type : LibSPA::PodType
+
+      def self.build(&)
+        pod = PodFactory.new
+        yield pod
+
+        new(pod.to_unsafe)
+      end
 
       private def self.spa_ptrinside(p0 : T*, s0, p1 : U*, s1) forall T, U
         if p0.address <= p1.address && s1 <= s0 && p1.address - p0.address <= s0 - s1
