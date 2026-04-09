@@ -115,7 +115,7 @@ module Pipewire
       state_changed : Void*, StreamState, StreamState, LibC::Char* -> Void
       control_info : Void*, UInt32, StreamControl* -> Void
       io_changed : Void*, UInt32, Void*, UInt32 -> Void
-      param_changed : Void*, UInt32, LibSPA::Pod* -> Void
+      param_changed : Void*, LibSPA::ParamType, LibSPA::Pod* -> Void
       add_buffer : Void*, Buffer* -> Void
       remove_buffer : Void*, Buffer* -> Void
       process : Void* -> Void
