@@ -227,6 +227,7 @@ module Pipewire
       UMP
     end
 
+    # defined in props.h. Used together with PodObjectType::Props
     enum Prop
       START
 
@@ -292,6 +293,136 @@ module Pipewire
       Params
 
       START_CUSTOM = 0x1000000
+    end
+
+    # defined in format.h. Used together with PodObjectType::Format
+    enum Format
+      START
+
+      MediaType
+      MediaSubtype
+      START_Audio    = 0x10000
+      AUDIO_format
+      AUDIO_flags
+      AUDIO_rate
+      AUDIO_channels
+      AUDIO_position
+
+      AUDIO_iec958Codec
+
+      AUDIO_bitorder
+      AUDIO_interleave
+      AUDIO_bitrate
+      AUDIO_blockAlign
+
+      AUDIO_AAC_streamFormat
+
+      AUDIO_WMA_profile
+
+      AUDIO_AMR_bandMode
+
+      AUDIO_MP3_channelMode
+
+      AUDIO_DTS_extType
+      START_Video       = 0x20000
+      VIDEO_format
+      VIDEO_modifier
+
+      VIDEO_size
+      VIDEO_framerate
+      VIDEO_maxFramerate
+      VIDEO_views
+      VIDEO_interlaceMode
+      VIDEO_pixelAspectRatio
+      VIDEO_multiviewMode
+      VIDEO_multiviewFlags
+      VIDEO_chromaSite
+      VIDEO_colorRange
+      VIDEO_colorMatrix
+      VIDEO_transferFunction
+      VIDEO_colorPrimaries
+      VIDEO_profile
+      VIDEO_level
+      VIDEO_H264_streamFormat
+      VIDEO_H264_alignment
+      VIDEO_H265_streamFormat
+      VIDEO_H265_alignment
+
+      START_Image       = 0x30000
+      START_Binary      = 0x40000
+      START_Stream      = 0x50000
+      START_Application = 0x60000
+      CONTROL_types
+    end
+
+    # defined in format.h, used in props with Format::MediaType as key
+    enum MediaType
+      Unknown
+      Audio
+      Video
+      Image
+      Binary
+      Stream
+      Application
+    end
+
+    # defined in format.h, used in props with Format::MediaSubType as key
+    enum MediaSubType
+      Unknown
+      Raw
+      Dsp
+      Iec958
+      Dsd
+
+      START_Audio = 0x10000
+      Mp3
+      Aac
+      Vorbis
+      Wma
+      Ra
+      Sbc
+      Adpcm
+      G723
+      G726
+      G729
+      Amr
+      Gsm
+      Alac
+      Flac
+      Ape
+      Opus
+      Ac3
+      Eac3
+      Truehd
+      Dts
+      Mpegh
+
+      START_Video = 0x20000
+      H264
+      Mjpg
+      Dv
+      Mpegts
+      H263
+      Mpeg1
+      Mpeg2
+      Mpeg4
+      Xvid
+      Vc1
+      Vp8
+      Vp9
+      Bayer
+      H265
+
+      START_Image = 0x30000
+      Jpeg
+
+      START_Binary = 0x40000
+
+      START_Stream = 0x50000
+      Midi
+
+      START_Application = 0x60000
+      Control
     end
 
     struct DictItem
