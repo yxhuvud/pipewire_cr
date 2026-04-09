@@ -36,7 +36,7 @@ module Pipewire
     event_listener state_changed : LibPipewire::StreamState, LibPipewire::StreamState, String -> Void
     event_listener control_info : UInt32, LibPipewire::StreamControl -> Void
     event_listener io_changed : UInt32, Void*, UInt32 -> Void
-    event_listener param_changed : UInt32, SPA::Pod -> Void
+    event_listener param_changed : LibSPA::ParamType, SPA::Pod -> Void
     event_listener add_buffer : LibPipewire::Buffer -> Void
     event_listener remove_buffer : LibPipewire::Buffer -> Void
     event_listener process : -> Void
