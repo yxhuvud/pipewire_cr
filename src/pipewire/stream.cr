@@ -44,8 +44,8 @@ module Pipewire
     event_listener command : LibSPA::Command -> Void
     event_listener trigger_done : -> Void
 
-    def connect(params : Array(Pipewire::LibSPA::Pod*),
-                direction : LibPipewire::Direction,
+    def connect(params : Array(Pipewire::SPA::Pod),
+                direction : Pipewire::LibPipewire::Direction,
                 target : UInt32 = LibPipewire::ID_ANY,
                 flags : Flag = :none)
       LibPipewire.pw_stream_connect(
@@ -53,7 +53,7 @@ module Pipewire
         direction,
         target,
         flags,
-        params,
+        params.map(&.to_unsafe),
         params.size)
     end
 

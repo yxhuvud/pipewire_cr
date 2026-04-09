@@ -14,6 +14,22 @@ stream = core.create_stream("audio-src", {
   Pipewire::PropertyKey::MEDIA_ROLE     => "Music",
 })
 
+pod = Pipewire::SPA::Pod.build do |p|
+  p.object(Pipewire::LibSPA::PodObjectType::Format, Pipewire::LibSPA::ParamType::EnumFormat) do
+    p.prop(Pipewire::LibSPA::Format::MediaType) { p.id(Pipewire::LibSPA::MediaType::Audio) }
+    p.prop(Pipewire::LibSPA::Format::MediaSubtype) { p.id(Pipewire::LibSPA::MediaSubType::Raw) }
+    p.prop(Pipewire::LibSPA::Format::AUDIO_format) { p.id(Pipewire::LibSPA::AudioFormat::S16) }
+    p.prop(Pipewire::LibSPA::Format::AUDIO_channels) { p.int(CHANNELS) }
+    p.prop(Pipewire::LibSPA::Format::AUDIO_rate) { p.int(RATE) }
+  end
+end
+
+stream.connect(
+  direction: :output,
+  flags: Pipewire::Stream::Flag::Autoconnect | Pipewire::Stream::Flag::MapBuffers,
+  params: [pod]
+)
+
 accumulator = 0f64
 
 listener = stream.on_process do
@@ -48,14 +64,5 @@ listener = stream.on_process do
     puts "out of buffers"
   end
 end
-
-buffer = Slice(UInt8).new(1024)
-pod_builder = Pipewire::SPA::PodBuilder.new(buffer)
-
-audio_info_raw = Pipewire::LibSPA::AudioInfoRaw.new(format: Pipewire::LibSPA::AudioFormat::S16, channels: CHANNELS, rate: RATE)
-pod = Pipewire::LibSPA.spa_format_audio_raw_build(pod_builder, Pipewire::LibSPA::ParamType::EnumFormat, pointerof(audio_info_raw))
-params = [pod]
-
-stream.connect(direction: :output, flags: Pipewire::Stream::Flag::Autoconnect | Pipewire::Stream::Flag::MapBuffers, params: params)
 
 main_loop.process_all
