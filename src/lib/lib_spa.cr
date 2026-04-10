@@ -209,14 +209,14 @@ module Pipewire
       Flags
     end
 
+    @[Flags]
     enum PropFlag
-      None       = 0
-      Readonly   = 1u32 << 0
-      Hardware   = 1u32 << 1
-      HintDict   = 1u32 << 2
-      Mandatory  = 1u32 << 3
-      DontFixate = 1u32 << 4
-      Drop       = 1u32 << 5
+      Readonly
+      Hardware
+      HintDict
+      Mandatory
+      DontFixate
+      Drop
     end
 
     enum ControlType
