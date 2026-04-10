@@ -10,28 +10,24 @@ module Pipewire
       end
 
       def int(value : Int32)
-        start = @io.pos
         write_header(4, LibSPA::PodType::Int)
         write_bytes(value)
         align8
       end
 
       def id(value)
-        start = @io.pos
         write_header(4, LibSPA::PodType::Id)
         write_bytes value.to_u32
         align8
       end
 
       def bool(value : Bool)
-        start = @io.pos
         write_header(4, LibSPA::PodType::Bool)
         write_bytes value ? 1 : 0
         align8
       end
 
       def string(value : String)
-        start = @io.pos
         bytes = value.to_slice
         size = bytes.size + 1
 
