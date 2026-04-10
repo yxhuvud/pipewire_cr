@@ -15,6 +15,12 @@ module Pipewire
         align8
       end
 
+      def long(value : Int64)
+        write_header(8, LibSPA::PodType::Long)
+        write_bytes(value)
+        align8
+      end
+
       def id(value)
         write_header(4, LibSPA::PodType::Id)
         write_bytes value.to_u32
@@ -27,6 +33,18 @@ module Pipewire
         align8
       end
 
+      def float(value : Float32)
+        write_header(4, LibSPA::PodType::Float)
+        write_bytes value
+        align8
+      end
+
+      def double(value : Float64)
+        write_header(8, LibSPA::PodType::Double)
+        write_bytes value
+        align8
+      end
+
       def string(value : String)
         bytes = value.to_slice
         size = bytes.size + 1
@@ -36,6 +54,38 @@ module Pipewire
         @io.write_byte(0)
         align8
       end
+
+      {% begin %}
+        {% for args in [
+                         {"Bool", 4, "Bool"},
+                         {"Int32", 4, "Int"},
+                         {"Int64", 8, "Long"},
+                         {"Float32", 4, "Float"},
+                         {"Float64", 8, "Double"},
+                       ] %}
+          {% arg_type, value_size, pod_type = args %}
+          def array(values : Array({{arg_type.id}}))
+            start = @io.pos
+
+            write_header(0, LibSPA::PodType::Array)
+
+            body_start = @io.pos
+
+            write_header({{value_size}}, LibSPA::PodType::{{pod_type.id}})
+
+            values.each do |v|
+              write_bytes v
+            end
+
+            body_end = @io.pos
+            size = (body_end - body_start).to_u32
+
+            patch_size(start, size)
+
+            align8
+          end
+        {% end %}
+      {% end %}
 
       def object(obj_type : Pipewire::LibSPA::PodObjectType, obj_id : Pipewire::LibSPA::ParamType, &)
         start = @io.pos
@@ -91,7 +141,7 @@ module Pipewire
       private def patch_size(offset : Int32, size : UInt32)
         current = @io.pos
         @io.pos = offset
-        write_header(size, LibSPA::PodType::Object)
+        write_bytes(size)
         @io.pos = current
       end
 
