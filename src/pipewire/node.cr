@@ -19,6 +19,10 @@ module Pipewire
       LibPipewire.pw_node_enum_params(self, seq, id, start, num, filter)
     end
 
+    def set_param(id, flags, pod)
+      LibPipewire.pw_node_set_param(self, id, flags, pod)
+    end
+
     def finalize
       LibPipewire.pw_proxy_destroy(self.to_unsafe.as(Pointer(LibPipewire::Proxy)))
     end
