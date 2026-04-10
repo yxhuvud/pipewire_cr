@@ -1,11 +1,11 @@
 LDFLAGS=`pkg-config --cflags --libs libpipewire-0.3`
 CFLAGS=-march=native -g -c -Wall -O3
 
-.PHONY :  spec clean all build init example
+.PHONY : spec clean all build init example
 
-all : 	build spec
+all : build spec
 
-spec  : build
+spec : build
 	rm -rf .test
 	mkdir -p .test
 	crystal spec --error-trace
