@@ -37,6 +37,24 @@ module Pipewire
       Tag
     end
 
+    # defined in param/route.h, used together with ParamType::Route
+    enum ParamRoute
+      START
+      Index
+      Direction
+      Device
+      Name
+      Description
+      Priority
+      Available
+      Info
+      Profiles
+      Props
+      Devices
+      Profile
+      Save
+    end
+
     enum AudioFormat
       UNKNOWN
       ENCODED
