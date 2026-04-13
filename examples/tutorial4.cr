@@ -32,7 +32,7 @@ stream.connect(
 
 accumulator = 0f64
 
-listener = stream.on_process do
+stream.on_process do
   b = stream.dequeue_buffer
   if b.value?
     buf = b.buffer

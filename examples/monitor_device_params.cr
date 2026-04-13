@@ -8,12 +8,9 @@ context = main_loop.create_context
 core = context.connect
 registry = core.registry
 
-devices = [] of Pipewire::Device
-
 registry.on_global do |device_id, permissions, item_type, version, properties|
   if item_type == "PipeWire:Interface:Device"
     device = registry.bind_device(device_id, item_type)
-    devices << device
 
     device.on_param do |seq, param_type, index, next_index, param|
       puts param.to_value.to_pretty_json
