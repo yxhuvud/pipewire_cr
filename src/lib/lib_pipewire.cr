@@ -60,6 +60,15 @@ module Pipewire
       Params
     end
 
+    @[Flags]
+    enum Perm : UInt32
+      Read     = 0o400
+      Write    = 0o200
+      Execute  = 0o100
+      Metadata = 0o010
+      Link     = 0o020
+    end
+
     type Loop = Void
     type MainLoop = Void
     type Stream = Void
@@ -135,7 +144,7 @@ module Pipewire
 
     struct RegistryEvents
       version : UInt32
-      global : Void*, UInt32, UInt32, LibC::Char*, UInt32, LibSPA::Dict* -> Void
+      global : Void*, UInt32, Perm, LibC::Char*, UInt32, LibSPA::Dict* -> Void
       global_remove : Void*, UInt32 -> Void
     end
 
@@ -169,7 +178,7 @@ module Pipewire
 
     struct Permissions
       id : UInt32
-      permissions : UInt32
+      permissions : Perm
     end
 
     struct ClientEvents
