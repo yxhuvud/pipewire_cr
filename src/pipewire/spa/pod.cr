@@ -110,7 +110,7 @@ module Pipewire
           if size >= sizeof(LibSPA::PodArrayBody)
             array_body = body.as(LibSPA::PodArrayBody*)
             element_pointer = (array_body + 1).as(Void*)
-            info_list = type_info_list[0].values.any? ? type_info_list[0].values : type_info_list
+            info_list = type_info_list.any? && type_info_list[0].values.any? ? type_info_list[0].values : type_info_list
 
             array = [] of Value
 
