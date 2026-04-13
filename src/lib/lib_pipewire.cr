@@ -9,10 +9,12 @@ module Pipewire
     VERSION_STREAM_EVENTS   = 2
     VERSION_CLIENT_EVENTS   = 0
     VERSION_METADATA_EVENTS = 0
+    VERSION_DEVICE_EVENTS   = 0
     VERSION_REGISTRY        = 3
     VERSION_NODE            = 3
     VERSION_CLIENT          = 3
     VERSION_METADATA        = 3
+    VERSION_DEVICE          = 3
 
     NODE_EVENT_PARAM = 1
 
@@ -52,6 +54,12 @@ module Pipewire
       PW_NODE_STATE_RUNNING   =  3
     end
 
+    @[Flags]
+    enum DeviceChangeMask : UInt64
+      Props
+      Params
+    end
+
     type Loop = Void
     type MainLoop = Void
     type Stream = Void
@@ -63,6 +71,7 @@ module Pipewire
     type Client = Void
     type Metadata = Void
     type ThreadLoop = Void
+    type Device = Void
 
     alias Direction = LibSPA::Direction
 
@@ -174,6 +183,20 @@ module Pipewire
       property : Void*, UInt32, LibC::Char*, LibC::Char*, LibC::Char* -> LibC::Int
     end
 
+    struct DeviceInfo
+      id : UInt32
+      change_mask : DeviceChangeMask
+      properties : LibSPA::Dict*
+      params : LibSPA::ParamInfo*
+      n_params : UInt32
+    end
+
+    struct DeviceEvents
+      version : UInt32
+      info : Void*, DeviceInfo* -> Void
+      param : Void*, Int32, LibSPA::ParamType, UInt32, UInt32, LibSPA::Pod* -> Void # The Pipewire headers want the third argument to be of type uint32_t, but the value appears to actually be from the spa_param_type enum.
+    end
+
     fun pw_init(argc : LibC::Int*, argv : LibC::Char**) : Void
 
     fun pw_get_headers_version = pw_get_headers_version_shim : LibC::Char*
@@ -192,6 +215,10 @@ module Pipewire
     fun pw_core_get_registry(core : Core*, version : UInt32, user_data_size : LibC::SizeT) : Registry*
     fun pw_core_sync(core : Core*, id : UInt32, seq : LibC::Int) : LibC::Int
     fun pw_core_disconnect(core : Core*) : LibC::Int
+    fun pw_device_add_listener(device : Device*, listener : LibSPA::Hook*, events : DeviceEvents*, data : Void*) : LibC::Int
+    fun pw_device_subscribe_params(device : Device*, ids : LibSPA::ParamType*, n_ids : UInt32) : LibC::Int
+    fun pw_device_enum_params(device : Device*, seq : LibC::Int, id : LibSPA::ParamType, start : UInt32, num : UInt32, filter : LibSPA::Pod*) : LibC::Int
+    fun pw_device_set_param(device : Device*, id : LibSPA::ParamType, flags : UInt32, param : LibSPA::Pod*) : LibC::Int
     fun pw_registry_add_listener(registry : Registry*, listener : LibSPA::Hook*, events : RegistryEvents*, data : Void*) : LibC::Int
     fun pw_registry_bind(registry : Registry*, id : UInt32, type : LibC::Char*, version : UInt32, user_data_size : LibC::SizeT) : Void*
     fun pw_metadata_add_listener = pw_metadata_add_listener_shim(metadata : Metadata*, listener : LibSPA::Hook*, events : MetadataEvents*, data : Void*) : LibC::Int

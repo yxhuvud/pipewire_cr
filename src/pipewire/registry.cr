@@ -1,5 +1,6 @@
 require "./spa/dict"
 require "./client"
+require "./device"
 require "./node"
 require "./metadata"
 
@@ -18,6 +19,10 @@ module Pipewire
 
     def bind_client(id, item_type) : Client
       Client.new(LibPipewire.pw_registry_bind(self, id, item_type, LibPipewire::VERSION_CLIENT, 0).as(LibPipewire::Client*))
+    end
+
+    def bind_device(id, item_type) : Device
+      Device.new(LibPipewire.pw_registry_bind(self, id, item_type, LibPipewire::VERSION_DEVICE, 0).as(LibPipewire::Device*))
     end
 
     def bind_metadata(id, item_type) : Metadata
