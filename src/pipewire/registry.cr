@@ -21,7 +21,19 @@ module Pipewire
                        Node
                      ] %}
         def bind_{{ name.downcase.id }}(id, item_type, autoremove = true) : {{ name.id }}
-          {{ name.id }}.new(LibPipewire.pw_registry_bind(self, id, item_type, LibPipewire::VERSION_{{ name.upcase.id }}, 0).as(LibPipewire::{{ name.id }}*))
+          bound_object = {{ name.id }}.new(LibPipewire.pw_registry_bind(self, id, item_type, LibPipewire::VERSION_{{ name.upcase.id }}, 0).as(LibPipewire::{{ name.id }}*))
+
+          if autoremove
+            self.on_global_remove do |removed_id|
+              if removed_id == id
+                {% if parse_type(name).resolve.has_method?(:remove_event_listeners) %}
+                  bound_object.remove_event_listeners
+                {% end %}
+              end
+            end
+          end
+
+          bound_object
         end
       {% end %}
     {% end %}

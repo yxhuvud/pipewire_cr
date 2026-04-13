@@ -63,6 +63,14 @@ module Pipewire
           ::Pipewire::LibSPA.spa_hook_remove(pointerof(@hook))
         end
       end
+
+      def remove_event_listeners
+        {% if @type.has_method?(:remove_event_listeners) %}
+          previous_def
+        {% end %}
+
+        event_listeners_{{ callback_name }}.each(&.remove)
+      end
     end
   end
 end
