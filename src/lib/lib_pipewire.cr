@@ -176,7 +176,7 @@ module Pipewire
       properties : LibSPA::Dict*
     end
 
-    struct Permissions
+    struct Permission
       id : UInt32
       permissions : Perm
     end
@@ -184,7 +184,7 @@ module Pipewire
     struct ClientEvents
       version : UInt32
       info : Void*, ClientInfo* -> Void
-      permissions : Void*, UInt32, UInt32, Permissions* -> Void
+      permissions : Void*, UInt32, UInt32, Permission* -> Void
     end
 
     struct MetadataEvents

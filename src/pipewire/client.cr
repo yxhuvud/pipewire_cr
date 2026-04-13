@@ -8,7 +8,7 @@ module Pipewire
     EVENT_LISTENER_VERSION = LibPipewire::VERSION_CLIENT_EVENTS
 
     event_listener info : ClientInfo -> Void
-    event_listener permissions : UInt32, UInt32, LibPipewire::Permissions -> Void
+    event_listener permissions : UInt32, UInt32, LibPipewire::Permission -> Void
 
     def finalize
       LibPipewire.pw_proxy_destroy(self.to_unsafe.as(Pointer(LibPipewire::Proxy)))
