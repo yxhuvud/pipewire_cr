@@ -46,7 +46,7 @@ context = main_loop.create_context
 core = context.connect(
   {
     Pipewire::PropertyKey::REMOTE_NAME => opt_remote_name,
-  }.compact
+  }
 )
 
 sync = 0
