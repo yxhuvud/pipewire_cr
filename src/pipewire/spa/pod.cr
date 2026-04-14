@@ -140,7 +140,7 @@ module Pipewire
           prop_pointer = (object_body + 1).as(LibSPA::PodProp*)
 
           ti = type_info_list.find_type(object_body.value.type.to_i.to_u)
-          info_list = ti ? ti.values : type_info_list
+          info_list = ti && ti.values.any? ? ti.values : type_info_list
 
           hash = {} of String => Value
 
@@ -148,7 +148,7 @@ module Pipewire
             ii = info_list.find_type(prop_pointer.value.key.value.to_u)
             name = ii ? ii.short_name : "id-#{prop_pointer.value.key.value.to_s(16).rjust(8, '0')}"
 
-            hash[name] = self.to_value(prop_pointer.value.value.type, prop_pointer.value.value.size, (prop_pointer + 1).as(Void*), ii ? ii.values : TypeInfoList.root)
+            hash[name] = self.to_value(prop_pointer.value.value.type, prop_pointer.value.value.size, (prop_pointer + 1).as(Void*), ii && ii.values.any? ? ii.values : TypeInfoList.root)
             prop_pointer = (prop_pointer.as(Void*) + ((((sizeof(LibSPA::PodProp) + prop_pointer.value.value.size) - 1) | (LibSPA::POD_ALIGN - 1)) + 1)).as(LibSPA::PodProp*)
           end
 
