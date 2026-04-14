@@ -60,11 +60,13 @@ module Pipewire
         TypeInfo.new(self.to_unsafe + index)
       end
 
-      def find_type(type : UInt32)
+      def find_type(type : UInt32) : TypeInfo?
         find do |type_info|
           next type_info.type == type if type_info.valid_id?
 
-          type_info.values.find_type(type)
+          if (res = type_info.values.find_type(type))
+            break res
+          end
         end
       end
     end
