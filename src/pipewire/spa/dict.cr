@@ -4,8 +4,8 @@ require "../base"
 module Pipewire
   module SPA
     class Dict < Base(LibSPA::Dict)
-      include Enumerable(Tuple(String, String))
-      include Indexable(Tuple(String, String))
+      include Enumerable(Tuple(String, String?))
+      include Indexable(Tuple(String, String?))
 
       def initialize(@pointer : LibSPA::Dict*)
         super(@pointer)
@@ -21,7 +21,7 @@ module Pipewire
 
       def each(&)
         self.slice.each do |dict_item|
-          yield({String.new(dict_item.key), String.new(dict_item.value)})
+          yield({String.new(dict_item.key), dict_item.value.null? ? nil : String.new(dict_item.value)})
         end
       end
 
