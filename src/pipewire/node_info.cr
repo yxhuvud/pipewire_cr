@@ -9,7 +9,7 @@ module Pipewire
     value_getter id : UInt32
     value_getter max_input_ports : UInt32
     value_getter max_output_ports : UInt32
-    value_getter change_mask : UInt64
+    value_getter change_mask : LibPipewire::NodeChangeMask
     value_getter n_input_ports : UInt32
     value_getter n_output_ports : UInt32
     value_getter state : State

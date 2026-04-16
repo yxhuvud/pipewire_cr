@@ -61,6 +61,25 @@ module Pipewire
     end
 
     @[Flags]
+    enum NodeChangeMask : UInt64
+      InputPorts
+      OutputPorts
+      State
+      Props
+      Params
+    end
+
+    @[Flags]
+    enum ClientChangeMask : UInt64
+      Props
+    end
+
+    @[Flags]
+    enum CoreChangeMask : UInt64
+      Props
+    end
+
+    @[Flags]
     enum Perm : UInt32
       Read     = 0o400
       Write    = 0o200
@@ -93,7 +112,7 @@ module Pipewire
       id : UInt32
       max_input_ports : UInt32
       max_output_ports : UInt32
-      change_mask : UInt64
+      change_mask : NodeChangeMask
       n_input_ports : UInt32
       n_output_ports : UInt32
       state : NodeState
@@ -154,7 +173,7 @@ module Pipewire
       user_name : LibC::Char*
       host_name : LibC::Char*
       version : LibC::Char*
-      change_mask : UInt64
+      change_mask : CoreChangeMask
     end
 
     struct CoreEvents
@@ -172,7 +191,7 @@ module Pipewire
 
     struct ClientInfo
       id : UInt32
-      change_mask : UInt64
+      change_mask : ClientChangeMask
       properties : LibSPA::Dict*
     end
 
