@@ -56,7 +56,7 @@ module Pipewire
           end
         when LibSPA::PodType::Id
           id = body.as(UInt32*).value
-          type_info = TypeInfoList.root.find_type(id)
+          type_info = type_info_list.find_type(id)
 
           if !type_info.nil?
             type_info.short_name
