@@ -20,8 +20,8 @@ module Pipewire
                        Metadata
                        Node
                      ] %}
-        def bind_{{ name.downcase.id }}(id, item_type, autoremove = true) : {{ name.id }}
-          bound_object = {{ name.id }}.new(LibPipewire.pw_registry_bind(self, id, item_type, LibPipewire::VERSION_{{ name.upcase.id }}, 0).as(LibPipewire::{{ name.id }}*))
+        def bind_{{ name.downcase.id }}(id, autoremove = true) : {{ name.id }}
+          bound_object = {{ name.id }}.new(LibPipewire.pw_registry_bind(self, id, "PipeWire:Interface:{{ name.id }}", LibPipewire::VERSION_{{ name.upcase.id }}, 0).as(LibPipewire::{{ name.id }}*))
 
           if autoremove
             self.on_global_remove do |removed_id|

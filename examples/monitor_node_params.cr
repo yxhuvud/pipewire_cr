@@ -10,7 +10,7 @@ registry = core.registry
 
 registry.on_global do |node_id, permissions, item_type, version, properties|
   if item_type == "PipeWire:Interface:Node"
-    node = registry.bind_node(node_id, item_type)
+    node = registry.bind_node(node_id)
 
     node.on_param do |seq, param_type, index, next_index, param|
       puts param.to_value.to_pretty_json

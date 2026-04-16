@@ -68,7 +68,7 @@ registry.on_global do |id, permissions, item_type, version, properties|
 
   case item_type
   when "PipeWire:Interface:Node"
-    node = registry.bind_node(id, item_type)
+    node = registry.bind_node(id)
 
     node.on_info do |node_info|
       node_info

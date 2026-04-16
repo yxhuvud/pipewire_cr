@@ -82,7 +82,7 @@ registry.on_global do |object_id, permissions, item_type, version, properties|
         puts "Found \"#{name}\" metadata #{object_id}"
 
         if !opt_list
-          metadata = registry.bind_metadata(object_id, item_type)
+          metadata = registry.bind_metadata(object_id)
           cached_metadata = metadata
 
           if opt_delete

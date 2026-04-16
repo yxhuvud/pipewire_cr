@@ -11,7 +11,7 @@ client = nil
 
 registry.on_global do |id, permissions, item_type, version, properties|
   if !client && item_type == "PipeWire:Interface:Client"
-    client = registry.bind_client(id, item_type)
+    client = registry.bind_client(id)
     client.not_nil!.on_info do |client_info|
       puts "client id:#{id}"
       puts "\tprops:"
