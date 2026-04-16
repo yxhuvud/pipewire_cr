@@ -6,6 +6,11 @@ module Pipewire
       {% type_name = @type.name.split("::").last.id %}
       {% events_type = parse_type("Pipewire::LibPipewire::#{type_name}Events").resolve %}
 
+      # Registers the block as a new handler for the event `{{ callback_name }}`.
+      #
+      # A reference to the returned instance of `EventListener{{ callback_name.camelcase }}` is held by `self`, until `EventListener{{ callback_name.camelcase }}#remove` is called.
+      # This prevents the garbage collector from collecting the event handler.
+      # The instance of `EventListener{{ callback_name.camelcase }}` also holds a reference to `self`.
       def on_{{ callback_name }}(&callback : {{ callback_type }})
         EventListener{{ callback_name.camelcase }}.new(self, callback).tap do |event_listener|
           self.event_listeners_{{ callback_name }} << event_listener
@@ -54,6 +59,9 @@ module Pipewire
           LibPipewire.pw_{{ type_name.downcase }}_add_listener(@host, pointerof(@hook), pointerof(@events), @box)
         end
 
+        # Unregisters the event handler.
+        #
+        # This removes the reference to `self` in the host instance of `{{ @type }}`.
         def remove
           @host.event_listeners_{{ callback_name }}.delete(self)
           ::Pipewire::LibSPA.spa_hook_remove(pointerof(@hook))
@@ -64,6 +72,7 @@ module Pipewire
         end
       end
 
+      # Removes each event handler registered on this instance.
       def remove_event_listeners
         {% if @type.has_method?(:remove_event_listeners) %}
           previous_def
