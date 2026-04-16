@@ -47,11 +47,11 @@ module Pipewire
     end
 
     enum NodeState
-      PW_NODE_STATE_ERROR     = -1
-      PW_NODE_STATE_CREATING  =  0
-      PW_NODE_STATE_SUSPENDED =  1
-      PW_NODE_STATE_IDLE      =  2
-      PW_NODE_STATE_RUNNING   =  3
+      Error     = -1
+      Creating  =  0
+      Suspended =  1
+      Idle      =  2
+      Running   =  3
     end
 
     @[Flags]
