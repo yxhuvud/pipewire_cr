@@ -50,7 +50,7 @@ module Pipewire
           nil
         when LibSPA::PodType::Bool
           if size >= sizeof(Int32)
-            body.as(Int32*).value == 0
+            body.as(Int32*).value != 0
           else
             nil
           end
