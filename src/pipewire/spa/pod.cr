@@ -12,6 +12,9 @@ module Pipewire
         yield pod
 
         new(pod.to_unsafe)
+
+      def self.new(factory : PodFactory)
+        new(factory.to_unsafe)
       end
 
       private def self.spa_ptrinside(p0 : T*, s0, p1 : U*, s1) forall T, U
