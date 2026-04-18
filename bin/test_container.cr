@@ -4,8 +4,7 @@ require "process"
 
 TEST_IMAGE_NAME = "crystal_pipewire_test"
 
-container_runtime = Process.find_executable("podman")
-container_runtime = Process.find_executable("docker") unless container_runtime
+container_runtime = Process.find_executable("podman") || Process.find_executable("docker")
 
 unless container_runtime
   STDERR.puts %q{Could not find executables "podman" or "docker".}
