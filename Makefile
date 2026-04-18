@@ -10,6 +10,11 @@ spec : build
 	mkdir -p .test
 	crystal spec --error-trace
 
+fast_spec : build
+	rm -rf .test
+	mkdir -p .test
+	crystal spec spec/pipewire* --error-trace
+
 build : init
 	cc $(CFLAGS) -c -o build/shim_pipewire.o src/c/shim_pipewire.c -lm $(LDFLAGS)
 	cc $(CFLAGS) -c -o build/shim_spa.o      src/c/shim_spa.c      -lm $(LDFLAGS)
