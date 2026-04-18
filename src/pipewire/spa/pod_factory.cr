@@ -45,6 +45,20 @@ module Pipewire
         align8
       end
 
+      def fraction(num : Int32, denom : Int32)
+        write_header(8, LibSPA::PodType::Fraction)
+        @io.write_bytes(num)
+        @io.write_bytes(denom)
+        align8
+      end
+
+      def rectangle(width : Int32, height : Int32)
+        write_header(8, LibSPA::PodType::Rectangle)
+        @io.write_bytes(width)
+        @io.write_bytes(height)
+        align8
+      end
+
       def string(value : String)
         bytes = value.to_slice
         size = bytes.size + 1

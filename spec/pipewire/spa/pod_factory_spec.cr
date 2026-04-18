@@ -64,6 +64,34 @@ describe Pipewire::SPA::PodFactory do
 
       aligned8?(to_slice).should be_true
     end
+
+    it "builds fraction pod" do
+      pod = Pipewire::SPA::PodFactory.new
+      pod.fraction(1, 2)
+
+      to_slice = pod.to_slice
+
+      u32(to_slice, 0).should eq(8) # size of num + denom
+      u32(to_slice, 4).should eq(Pipewire::LibSPA::PodType::Fraction.value)
+      u32(to_slice, 8).should eq(1)  # num
+      u32(to_slice, 12).should eq(2) # denom
+
+      aligned8?(to_slice).should be_true
+    end
+
+    it "builds rectangle pods" do
+      pod = Pipewire::SPA::PodFactory.new
+      pod.rectangle(100, 200)
+
+      to_slice = pod.to_slice
+
+      u32(to_slice, 0).should eq(8) # size of width + height
+      u32(to_slice, 4).should eq(Pipewire::LibSPA::PodType::Rectangle.value)
+      u32(to_slice, 8).should eq(100)  # width
+      u32(to_slice, 12).should eq(200) # height
+
+      aligned8?(to_slice).should be_true
+    end
   end
 
   describe "object pods" do
