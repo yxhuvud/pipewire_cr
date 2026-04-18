@@ -4,6 +4,14 @@ private def u32(to_slice, offset)
   IO::ByteFormat::LittleEndian.decode(UInt32, to_slice[offset, 4])
 end
 
+private def f32(to_slice, offset)
+  IO::ByteFormat::LittleEndian.decode(Float32, to_slice[offset, 4])
+end
+
+private def i64(to_slice, offset)
+  IO::ByteFormat::LittleEndian.decode(Int64, to_slice[offset, 8])
+end
+
 private def aligned8?(to_slice)
   to_slice.size % 8 == 0
 end
@@ -104,6 +112,66 @@ describe Pipewire::SPA::PodFactory do
       u32(to_slice, prop_offset).should eq(key)
 
       aligned8?(to_slice).should be_true
+    end
+  end
+
+  describe "array pods" do
+    it "builds int array pod" do
+      pod = Pipewire::SPA::PodFactory.new
+      pod.array([1, 2, 3])
+
+      slice = pod.to_slice
+
+      # header
+      u32(slice, 0).should eq(8 + 3 * 4) # child header + 3 ints
+      u32(slice, 4).should eq(Pipewire::LibSPA::PodType::Array.value)
+
+      # child header
+      u32(slice, 8).should eq(4) # element size
+      u32(slice, 12).should eq(Pipewire::LibSPA::PodType::Int.value)
+
+      # values
+      u32(slice, 16).should eq(1)
+      u32(slice, 20).should eq(2)
+      u32(slice, 24).should eq(3)
+
+      aligned8?(slice).should be_true
+    end
+
+    it "builds float32 array pod" do
+      pod = Pipewire::SPA::PodFactory.new
+      pod.array([1.0_f32, 2.5_f32])
+
+      slice = pod.to_slice
+
+      u32(slice, 0).should eq(8 + 2 * 4)
+      u32(slice, 4).should eq(Pipewire::LibSPA::PodType::Array.value)
+
+      u32(slice, 8).should eq(4)
+      u32(slice, 12).should eq(Pipewire::LibSPA::PodType::Float.value)
+
+      f32(slice, 16).should eq(1.0_f32)
+      f32(slice, 20).should eq(2.5_f32)
+
+      aligned8?(slice).should be_true
+    end
+
+    it "builds int64 array pod" do
+      pod = Pipewire::SPA::PodFactory.new
+      pod.array([1_i64, 2_i64])
+
+      slice = pod.to_slice
+
+      u32(slice, 0).should eq(8 + 2 * 8)
+      u32(slice, 4).should eq(Pipewire::LibSPA::PodType::Array.value)
+
+      u32(slice, 8).should eq(8)
+      u32(slice, 12).should eq(Pipewire::LibSPA::PodType::Long.value)
+
+      i64(slice, 16).should eq(1_i64)
+      i64(slice, 24).should eq(2_i64)
+
+      aligned8?(slice).should be_true
     end
   end
 

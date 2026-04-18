@@ -55,37 +55,34 @@ module Pipewire
         align8
       end
 
-      {% begin %}
-        {% for args in [
-                         {"Bool", 4, "Bool"},
-                         {"Int32", 4, "Int"},
-                         {"Int64", 8, "Long"},
-                         {"Float32", 4, "Float"},
-                         {"Float64", 8, "Double"},
-                       ] %}
-          {% arg_type, value_size, pod_type = args %}
-          def array(values : Array({{arg_type.id}}))
-            start = @io.pos
+      {% for entry in [
+                        {Int32, 4, "Int"},
+                        {Int64, 8, "Long"},
+                        {Float32, 4, "Float"},
+                        {Float64, 8, "Double"},
+                        {Bool, 4, "Bool"},
+                      ] %}
 
-            write_header(0, LibSPA::PodType::Array)
+        {% type, size, pod = entry %}
 
-            body_start = @io.pos
-
-            write_header({{value_size}}, LibSPA::PodType::{{pod_type.id}})
-
-            values.each do |v|
-              write_bytes v
-            end
-
-            body_end = @io.pos
-            size = (body_end - body_start).to_u32
-
-            patch_size(start, size)
-
-            align8
-          end
-        {% end %}
+        def array(values : Array({{type.id}}))
+          write_array({{size}}, LibSPA::PodType::{{pod.id}}, values)
+        end
       {% end %}
+
+      private def write_array(element_size : Int32, element_type : LibSPA::PodType, values)
+        start = @io.pos
+
+        write_header(0, LibSPA::PodType::Array)
+        body_start = @io.pos
+        write_header(element_size.to_u32, element_type)
+        values.each { |v| write_bytes v }
+        body_end = @io.pos
+        size = (body_end - body_start).to_u32
+
+        patch_size(start, size)
+        align8
+      end
 
       def object(obj_type : Pipewire::LibSPA::PodObjectType, obj_id : Pipewire::LibSPA::ParamType, &)
         start = @io.pos
