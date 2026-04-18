@@ -1,5 +1,6 @@
 require "./type_info"
 require "./pod_factory"
+require "./pod_factory/format"
 
 module Pipewire
   module SPA
@@ -7,11 +8,16 @@ module Pipewire
       value_getter size : UInt32
       value_getter type : LibSPA::PodType
 
-      def self.build(&)
+      def self.new(&)
         pod = PodFactory.new
         yield pod
 
-        new(pod.to_unsafe)
+        new(pod)
+      end
+
+      def self.format(&)
+        new(PodFactory::Format.new { |f| yield f })
+      end
 
       def self.new(factory : PodFactory)
         new(factory.to_unsafe)

@@ -14,14 +14,11 @@ stream = core.create_stream("audio-src", {
   Pipewire::PropertyKey::MEDIA_ROLE     => "Music",
 })
 
-pod = Pipewire::SPA::Pod.build do |p|
-  p.object(Pipewire::LibSPA::PodObjectType::Format, Pipewire::LibSPA::ParamType::EnumFormat) do
-    p.prop(Pipewire::LibSPA::Format::MediaType) { p.id(Pipewire::LibSPA::MediaType::Audio) }
-    p.prop(Pipewire::LibSPA::Format::MediaSubtype) { p.id(Pipewire::LibSPA::MediaSubType::Raw) }
-    p.prop(Pipewire::LibSPA::Format::AUDIO_format) { p.id(Pipewire::LibSPA::AudioFormat::S16) }
-    p.prop(Pipewire::LibSPA::Format::AUDIO_channels) { p.int(CHANNELS) }
-    p.prop(Pipewire::LibSPA::Format::AUDIO_rate) { p.int(RATE) }
-  end
+pod = Pipewire::SPA::Pod.format do |pod|
+  pod.media :audio, :raw
+  pod.audio_format :s16
+  pod.audio_channels CHANNELS
+  pod.audio_rate RATE
 end
 
 stream.connect(
