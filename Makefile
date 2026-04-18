@@ -13,7 +13,7 @@ spec : build
 fast_spec : build
 	rm -rf .test
 	mkdir -p .test
-	crystal spec spec/pipewire* --error-trace
+	crystal spec --tag ~compile --error-trace
 
 build : init
 	cc $(CFLAGS) -c -o build/shim_pipewire.o src/c/shim_pipewire.c -lm $(LDFLAGS)
