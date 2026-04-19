@@ -279,6 +279,36 @@ describe Pipewire::SPA::PodFactory do
     end
   end
 
+  describe "enum pods" do
+    it "builds enum choice pod (id)" do
+      pod = Pipewire::SPA::PodFactory.new
+      pod.choice_enum_id(Pipewire::LibSPA::AudioFormat::S16, [
+        Pipewire::LibSPA::AudioFormat::S16_LE,
+        Pipewire::LibSPA::AudioFormat::S16_BE,
+        Pipewire::LibSPA::AudioFormat::S24_BE,
+      ])
+
+      slice = pod.to_slice
+
+      # pod header
+      u32(slice, 0).should eq(8 + 8 + 4 * 4) # 8 + 8 + 16 = 32
+      u32(slice, 4).should eq(Pipewire::LibSPA::PodType::Choice.value)
+
+      # choice header
+      u32(slice, 8).should eq(Pipewire::LibSPA::Choice::Enum.value)
+      u32(slice, 12).should eq(0)
+
+      # child header
+      u32(slice, 16).should eq(4)
+      u32(slice, 20).should eq(Pipewire::LibSPA::PodType::Id.value)
+
+      u32(slice, 24).should eq(Pipewire::LibSPA::AudioFormat::S16.value)
+      u32(slice, 28).should eq(Pipewire::LibSPA::AudioFormat::S16_LE.value)
+      u32(slice, 32).should eq(Pipewire::LibSPA::AudioFormat::S16_BE.value)
+      u32(slice, 36).should eq(Pipewire::LibSPA::AudioFormat::S24_BE.value)
+
+      aligned8?(slice).should be_true
+    end
   end
 
   describe "properties" do

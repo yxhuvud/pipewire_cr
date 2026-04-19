@@ -131,6 +131,13 @@ module Pipewire
         align8
       end
 
+      def choice_enum_id(default : T, values : Array(T)) forall T
+        write_choice(LibSPA::Choice::Enum, 4, LibSPA::PodType::Id) do
+          write_bytes(default.value)
+          values.each { |v| write_bytes(v.value) }
+        end
+      end
+
       def prop(key : UInt32, flags : Pipewire::LibSPA::PropFlag = Pipewire::LibSPA::PropFlag::None, &)
         write_bytes(key)
         write_bytes(flags.value)
