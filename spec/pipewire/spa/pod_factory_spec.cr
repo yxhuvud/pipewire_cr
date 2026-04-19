@@ -247,6 +247,38 @@ describe Pipewire::SPA::PodFactory do
 
       aligned8?(slice).should be_true
     end
+
+    it "builds fraction range pod" do
+      pod = Pipewire::SPA::PodFactory.new
+      pod.range({30, 1}, {1, 1}, {60, 1}, Pipewire::LibSPA::PodType::Fraction)
+
+      slice = pod.to_slice
+
+      # pod header
+      u32(slice, 0).should eq(40)
+      u32(slice, 4).should eq(Pipewire::LibSPA::PodType::Choice.value)
+
+      # choice header
+      u32(slice, 8).should eq(Pipewire::LibSPA::Choice::Range.value)
+      u32(slice, 12).should eq(0)
+
+      # child header
+      u32(slice, 16).should eq(8)
+      u32(slice, 20).should eq(Pipewire::LibSPA::PodType::Fraction.value)
+
+      u32(slice, 24).should eq(30)
+      u32(slice, 28).should eq(1)
+
+      u32(slice, 32).should eq(1)
+      u32(slice, 36).should eq(1)
+
+      u32(slice, 40).should eq(60)
+      u32(slice, 44).should eq(1)
+
+      aligned8?(slice).should be_true
+    end
+  end
+
   end
 
   describe "properties" do

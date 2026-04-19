@@ -92,6 +92,18 @@ module Pipewire
         end
       {% end %}
 
+      def array(values : Array(Tuple(Int32, Int32)), type : LibSPA::PodType)
+        write_array(8, type, values)
+      end
+
+      def range(default : Tuple(Int32, Int32), min : Tuple(Int32, Int32), max : Tuple(Int32, Int32), type : LibSPA::PodType)
+        write_choice(LibSPA::Choice::Range, 8, type) do
+          write_bytes default
+          write_bytes min
+          write_bytes max
+        end
+      end
+
       private def write_array(element_size : Int32, element_type : LibSPA::PodType, values)
         reserve_header(LibSPA::PodType::Array) do
           write_header(element_size.to_u32, element_type)
@@ -137,6 +149,10 @@ module Pipewire
 
       private def write_bytes(value)
         @io.write_bytes(value, IO::ByteFormat::LittleEndian)
+      end
+
+      private def write_bytes(values : Tuple)
+        values.each { |v| write_bytes v }
       end
 
       private def patch_size(offset : Int32, size : UInt32)
