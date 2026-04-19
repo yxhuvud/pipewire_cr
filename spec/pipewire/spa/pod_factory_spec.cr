@@ -203,6 +203,52 @@ describe Pipewire::SPA::PodFactory do
     end
   end
 
+  describe "range pods" do
+    it "builds int range pod" do
+      pod = Pipewire::SPA::PodFactory.new
+      pod.range(10, 0, 20)
+
+      slice = pod.to_slice
+
+      u32(slice, 0).should eq(28) # body size
+      u32(slice, 4).should eq(Pipewire::LibSPA::PodType::Choice.value)
+
+      u32(slice, 8).should eq(Pipewire::LibSPA::Choice::Range.value)
+      u32(slice, 12).should eq(0) # flags
+
+      u32(slice, 16).should eq(4)
+      u32(slice, 20).should eq(Pipewire::LibSPA::PodType::Int.value)
+
+      u32(slice, 24).should eq(10) # default
+      u32(slice, 28).should eq(0)  # min
+      u32(slice, 32).should eq(20) # max
+
+      aligned8?(slice).should be_true
+    end
+
+    it "builds float32 range pod" do
+      pod = Pipewire::SPA::PodFactory.new
+      pod.range(0.5_f32, 0.0_f32, 1.0_f32)
+
+      slice = pod.to_slice
+
+      u32(slice, 0).should eq(28)
+      u32(slice, 4).should eq(Pipewire::LibSPA::PodType::Choice.value)
+
+      u32(slice, 8).should eq(Pipewire::LibSPA::Choice::Range.value)
+      u32(slice, 12).should eq(0)
+
+      u32(slice, 16).should eq(4)
+      u32(slice, 20).should eq(Pipewire::LibSPA::PodType::Float.value)
+
+      f32(slice, 24).should eq(0.5_f32)
+      f32(slice, 28).should eq(0.0_f32)
+      f32(slice, 32).should eq(1.0_f32)
+
+      aligned8?(slice).should be_true
+    end
+  end
+
   describe "properties" do
     it "writes key + flags + value" do
       key = 1u32
