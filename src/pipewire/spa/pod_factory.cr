@@ -126,15 +126,6 @@ module Pipewire
         yield self
       end
 
-      # FIXME: Separate builder for audio and video format objects.
-      # This is just to keep the boilerplate in example down. It is
-      # still horrible though.
-      def prop(key : Pipewire::LibSPA::Format, flags : Pipewire::LibSPA::PropFlag = Pipewire::LibSPA::PropFlag::None, &)
-        write_bytes(key.value.to_u32)
-        write_bytes(flags.value)
-        yield self
-      end
-
       private def align8
         pad = (8 - (@io.pos % 8)) % 8
         pad.times { @io.write_byte(0) }
