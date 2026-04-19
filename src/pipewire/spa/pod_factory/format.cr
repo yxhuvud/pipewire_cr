@@ -24,23 +24,35 @@ module Pipewire
         end
 
         def media_type(id : Pipewire::LibSPA::MediaType)
-          @pod_factory.prop(LibSPA::Format::MediaType) { @pod_factory.id(id.value) }
+          prop(LibSPA::Format::MediaType) { add_id(id) }
         end
 
         def media_subtype(id : Pipewire::LibSPA::MediaSubType)
-          @pod_factory.prop(LibSPA::Format::MediaSubtype) { @pod_factory.id(id.value) }
+          prop(LibSPA::Format::MediaSubtype) { add_id(id) }
         end
 
         def audio_format(format : Pipewire::LibSPA::AudioFormat)
-          @pod_factory.prop(LibSPA::Format::AUDIO_format) { @pod_factory.id(format.value) }
+          prop(LibSPA::Format::AUDIO_format) { add_id(format) }
         end
 
         def audio_channels(channels : Int32)
-          @pod_factory.prop(LibSPA::Format::AUDIO_channels) { @pod_factory.int(channels) }
+          prop(LibSPA::Format::AUDIO_channels) { int(channels) }
         end
 
         def audio_rate(rate : Int32)
-          @pod_factory.prop(LibSPA::Format::AUDIO_rate) { @pod_factory.int(rate) }
+          prop(LibSPA::Format::AUDIO_rate) { int(rate) }
+        end
+
+        private def prop(key : LibSPA::Format, &)
+          @pod_factory.prop(key.to_u32) { yield }
+        end
+
+        private def add_id(key)
+          @pod_factory.id(key.value)
+        end
+
+        private def int(value)
+          @pod_factory.int(value)
         end
       end
     end
