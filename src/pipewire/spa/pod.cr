@@ -51,7 +51,7 @@ module Pipewire
         (result = self.spa_ptr_type_inside(pod, size, iter))[0] && result[1] >= iter.value.size
       end
 
-      alias Value = Nil | Bool | Int32 | Int64 | Float32 | Float64 | String | Array(Value) | Hash(String, Value)
+      alias Value = Nil | Bool | Int32 | Int64 | Float32 | Float64 | String | Array(Value) | Hash(String, Value) | Tuple(Int32, Int32)
 
       def self.to_value(type : LibSPA::PodType, size : UInt32, body : Void*, type_info_list : TypeInfoList) : Value
         case type
@@ -108,10 +108,18 @@ module Pipewire
           nil
         when LibSPA::PodType::Rectangle
           # TODO: Implement this.
-          nil
+          # "<rectangle>"
+          if size >= sizeof(Int32) * 2
+            body.as(Tuple(Int32, Int32)*).value
+          else
+            nil
+          end
         when LibSPA::PodType::Fraction
-          # TODO: Implement this.
-          nil
+          if size >= sizeof(Int32) * 2
+            body.as(Tuple(Int32, Int32)*).value
+          else
+            nil
+          end
         when LibSPA::PodType::Bitmap
           # TODO: Implement this.
           nil
