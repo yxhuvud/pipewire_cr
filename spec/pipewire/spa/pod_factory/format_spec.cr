@@ -33,20 +33,92 @@ describe Pipewire::SPA::PodFactory::Format do
     pod.to_value.should eq({"mediaType" => "audio", "mediaSubtype" => "raw"})
   end
 
-  it "sets audio format" do
-    pod = Pipewire::SPA::Pod.format do |f|
-      f.audio_format :f32
+  describe "#audio_format" do
+    it "sets audio format" do
+      pod = Pipewire::SPA::Pod.format do |f|
+        f.audio_format :f32
+      end
+
+      pod.to_value.should eq({"format" => "F32LE"})
     end
 
-    pod.to_value.should eq({"format" => "F32LE"})
+    # TODO: Fix when parser handles enums
+    # it "allows setting multiples" do
+    #   pod = Pipewire::SPA::Pod.format do |f|
+    #     f.audio_format :f32, :s16
+    #   end
+    #
+    #   pod.to_value.should eq({"format" => ["F32LE", "S16LE"]})
+    # end
   end
 
-  it "sets audio rate" do
-    pod = Pipewire::SPA::Pod.format do |f|
-      f.audio_rate 48_000
+  describe "#video_format" do
+    it "sets video format" do
+      pod = Pipewire::SPA::Pod.format do |f|
+        f.video_format :gbr
+      end
+
+      pod.to_value.should eq({"format" => "GBR"})
     end
 
-    pod.to_value.should eq({"rate" => 48000})
+    # TODO: Fix when parser handles enums
+    # it "allows setting multiples" do
+    #   pod = Pipewire::SPA::Pod.format do |f|
+    #     f.video_format :gbr, :gbra
+    #   end
+    #
+    #   pod.to_value.should eq({"format" => ["F32LE", "S16LE"]})
+    # end
+  end
+
+  describe "#video_size" do
+    it "sets video size" do
+      pod = Pipewire::SPA::Pod.format do |f|
+        f.video_size({320, 240})
+      end
+
+      pod.to_value.should eq({"size" => {320, 240}})
+    end
+
+    # TODO: Fix when parser handles enums
+    # it "allows setting multiples" do
+    #   pod = Pipewire::SPA::Pod.format do |f|
+    #      f.video_size({320, 240}, {1, 1}, {4096, 4096})
+    #   end
+    #
+    #   pod.to_value.should eq({"size" => ["F32LE", "S16LE"]})
+    # end
+  end
+
+  describe "#video_framerate" do
+    it "sets video framerate" do
+      pod = Pipewire::SPA::Pod.format do |f|
+        f.video_framerate({320, 240})
+      end
+
+      pod.to_value.should eq({"framerate" => {320, 240}})
+    end
+
+    # TODO: Fix when parser handles enums
+    # it "allows setting multiples" do
+    #   pod = Pipewire::SPA::Pod.format do |f|
+    #      f.video_framerate({25, 1}, {0, 1}, {1000, 1})
+    #   end
+    #
+    #   pod.to_value.should eq({"framerate" => ["F32LE", "S16LE"]})
+    # end
+  end
+
+  describe "#audio_rate" do
+    it "sets audio rate" do
+      pod = Pipewire::SPA::Pod.format do |f|
+        f.audio_rate 48_000
+      end
+
+      pod.to_value.should eq({"rate" => 48000})
+    end
+
+    # TODO: Spec for range of audio rates
   end
 
   it "sets audio channels" do
@@ -72,6 +144,26 @@ describe Pipewire::SPA::PodFactory::Format do
         "format"       => "F32LE",
         "rate"         => 48000,
         "channels"     => 2,
+      }
+    )
+  end
+
+  it "builds a complete raw video format" do
+    pod = Pipewire::SPA::Pod.format do |f|
+      f.media_type :video
+      f.media_subtype :raw
+      f.video_format :rgb, :rgba, :rgbx, :bgrx, :yuy2, :i420
+      f.video_size({320, 240}, {1, 1}, {4096, 4096})
+      f.video_framerate({25, 1}, {0, 1}, {1000, 1})
+    end
+
+    pod.to_value.should eq(
+      {
+        "mediaType"    => "video",
+        "mediaSubtype" => "raw",
+        "format"       => "<choice>", # FIXME
+        "size"         => "<choice>", # FIXME
+        "framerate"    => "<choice>", # FIXME
       }
     )
   end
