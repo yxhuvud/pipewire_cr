@@ -176,6 +176,102 @@ module Pipewire
       F64_OE    = F64_BE
     end
 
+    enum VideoFormat
+      UNKNOWN
+      ENCODED
+
+      I420
+      YV12
+      YUY2
+      UYVY
+      AYUV
+      RGBX
+      BGRX
+      XRGB
+      XBGR
+      RGBA
+      BGRA
+      ARGB
+      ABGR
+      RGB
+      BGR
+      Y41B
+      Y42B
+      YVYU
+      Y444
+      V210
+      V216
+      NV12
+      NV21
+      GRAY8
+      GRAY16_BE
+      GRAY16_LE
+      V308
+      RGB16
+      BGR16
+      RGB15
+      BGR15
+      UYVP
+      A420
+      RGB8P
+      YUV9
+      YVU9
+      IYU1
+      ARGB64
+      AYUV64
+      R210
+      I420_10BE
+      I420_10LE
+      I422_10BE
+      I422_10LE
+      Y444_10BE
+      Y444_10LE
+      GBR
+      GBR_10BE
+      GBR_10LE
+      NV16
+      NV24
+      NV12_64Z32
+      A420_10BE
+      A420_10LE
+      A422_10BE
+      A422_10LE
+      A444_10BE
+      A444_10LE
+      NV61
+      P010_10BE
+      P010_10LE
+      IYU2
+      VYUY
+      GBRA
+      GBRA_10BE
+      GBRA_10LE
+      GBR_12BE
+      GBR_12LE
+      GBRA_12BE
+      GBRA_12LE
+      I420_12BE
+      I420_12LE
+      I422_12BE
+      I422_12LE
+      Y444_12BE
+      Y444_12LE
+
+      RGBA_F16
+      RGBA_F32
+
+      XRGB_210LE
+      XBGR_210LE
+      RGBx_102LE
+      BGRx_102LE
+      ARGB_210LE
+      ABGR_210LE
+      RGBA_102LE
+      BGRA_102LE
+
+      DSP_F32 = RGBA_F32
+    end
+
     enum PodType
       START     = 0x00000
       None
