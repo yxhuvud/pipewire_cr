@@ -56,7 +56,7 @@ module Pipewire
       def self.to_value(type : LibSPA::PodType, size : UInt32, body : Void*, type_info_list : TypeInfoList) : Value
         case type
         when LibSPA::PodType::None
-          nil
+          "<none>"
         when LibSPA::PodType::Bool
           if size >= sizeof(Int32)
             body.as(Int32*).value != 0
@@ -105,7 +105,7 @@ module Pipewire
           end
         when LibSPA::PodType::Bytes
           # TODO: Implement this.
-          nil
+          "<bytes>"
         when LibSPA::PodType::Rectangle
           # TODO: Implement this.
           # "<rectangle>"
@@ -122,7 +122,7 @@ module Pipewire
           end
         when LibSPA::PodType::Bitmap
           # TODO: Implement this.
-          nil
+          "<bitmap>"
         when LibSPA::PodType::Array
           if size >= sizeof(LibSPA::PodArrayBody)
             array_body = body.as(LibSPA::PodArrayBody*)
@@ -171,16 +171,15 @@ module Pipewire
 
           hash
         when LibSPA::PodType::Sequence
-          nil
+          "<sequence>"
         when LibSPA::PodType::Pointer
           # TODO: Implement this.
-          nil
+          "<pointer>"
         when LibSPA::PodType::Choice
-          # TODO: Implement this.
-          nil
+          "<choice>"
         when LibSPA::PodType::Pod
           # TODO: Implement this.
-          nil
+          "<pod>"
         end
       end
 
