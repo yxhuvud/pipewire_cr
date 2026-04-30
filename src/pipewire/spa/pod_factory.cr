@@ -3,6 +3,10 @@ require "../../lib/lib_spa"
 module Pipewire
   module SPA
     class PodFactory
+      # Composite helper types:
+      record(Fraction, numerator : UInt32, denominator : UInt32)
+      record(Rectangle, width : UInt32, height : UInt32)
+
       getter io : IO::Memory
 
       def initialize
@@ -45,14 +49,22 @@ module Pipewire
         align8
       end
 
-      def fraction(num : Int32, denom : Int32)
+      def fraction(fraction : Fraction)
+        fraction(fraction.width, fraction.height)
+      end
+
+      def fraction(num : UInt32, denom : UInt32)
         write_header(8, LibSPA::PodType::Fraction)
         write_bytes(num)
         write_bytes(denom)
         align8
       end
 
-      def rectangle(width : Int32, height : Int32)
+      def rectangle(rectangle : Rectangle)
+        rectangle(rectangle.width, rectangle.height)
+      end
+
+      def rectangle(width : UInt32, height : UInt32)
         write_header(8, LibSPA::PodType::Rectangle)
         write_bytes(width)
         write_bytes(height)
@@ -75,6 +87,8 @@ module Pipewire
                         {Float32, 4, "Float"},
                         {Float64, 8, "Double"},
                         {Bool, 4, "Bool"},
+                        {Rectangle, 8, "Rectangle"},
+                        {Fraction, 8, "Fraction"},
                       ] %}
 
         {% type, size, pod = entry %}
@@ -91,18 +105,6 @@ module Pipewire
           end
         end
       {% end %}
-
-      def array(values : Array(Tuple(Int32, Int32)), type : LibSPA::PodType)
-        write_array(8, type, values)
-      end
-
-      def range(default : Tuple(Int32, Int32), min : Tuple(Int32, Int32), max : Tuple(Int32, Int32), type : LibSPA::PodType)
-        write_choice(LibSPA::Choice::Range, 8, type) do
-          write_bytes default
-          write_bytes min
-          write_bytes max
-        end
-      end
 
       private def write_array(element_size : Int32, element_type : LibSPA::PodType, values)
         reserve_header(LibSPA::PodType::Array) do
@@ -158,8 +160,14 @@ module Pipewire
         @io.write_bytes(value, IO::ByteFormat::LittleEndian)
       end
 
-      private def write_bytes(values : Tuple)
-        values.each { |v| write_bytes v }
+      private def write_bytes(value : Rectangle)
+        write_bytes value.width
+        write_bytes value.height
+      end
+
+      private def write_bytes(value : Fraction)
+        write_bytes value.numerator
+        write_bytes value.denominator
       end
 
       private def patch_size(offset : Int32, size : UInt32)

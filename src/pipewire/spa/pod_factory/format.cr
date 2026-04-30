@@ -52,22 +52,34 @@ module Pipewire
         end
 
         def video_size(size : Tuple(Int32, Int32))
-          prop(LibSPA::Format::VIDEO_size) { @pod_factory.rectangle(*size) }
+          prop(LibSPA::Format::VIDEO_size) { @pod_factory.rectangle(*size.map &.to_u32) }
         end
 
         def video_size(default : Tuple(Int32, Int32), min : Tuple(Int32, Int32), max : Tuple(Int32, Int32))
+          video_size(
+            *{default, min, max}.map { |value| PodFactory::Rectangle.new(*value.map &.to_u32) }
+          )
+        end
+
+        def video_size(default : PodFactory::Rectangle, min : PodFactory::Rectangle, max : PodFactory::Rectangle)
           prop(LibSPA::Format::VIDEO_size) do
-            self.range(default, min, max, LibSPA::PodType::Rectangle)
+            @pod_factory.range(default, min, max)
           end
         end
 
         def video_framerate(rate : Tuple(Int32, Int32))
-          prop(LibSPA::Format::VIDEO_framerate) { @pod_factory.fraction(*rate) }
+          prop(LibSPA::Format::VIDEO_framerate) { @pod_factory.fraction(*rate.map &.to_u32) }
         end
 
         def video_framerate(default : Tuple(Int32, Int32), min : Tuple(Int32, Int32), max : Tuple(Int32, Int32))
+          video_framerate(
+            *{default, min, max}.map { |value| PodFactory::Fraction.new(*value.map &.to_u32) }
+          )
+        end
+
+        def video_framerate(default : PodFactory::Fraction, min : PodFactory::Fraction, max : PodFactory::Fraction)
           prop(LibSPA::Format::VIDEO_framerate) do
-            self.range(default, min, max, LibSPA::PodType::Fraction)
+            @pod_factory.range(default, min, max)
           end
         end
 
@@ -81,7 +93,7 @@ module Pipewire
 
         def audio_rate(default : Int32, min : Int32, max : Int32)
           prop(LibSPA::Format::AUDIO_rate) do
-            self.range(default, min, max, LibSPA::PodType::Int)
+            @pod_factory.range(default, min, max, LibSPA::PodType::Int)
           end
         end
 
@@ -99,10 +111,6 @@ module Pipewire
 
         private def enum(default, values : Enumerable(T)) forall T
           @pod_factory.choice_enum_id(default, values)
-        end
-
-        private def range(default, min, max, type)
-          @pod_factory.range(default, min, max, type)
         end
       end
     end

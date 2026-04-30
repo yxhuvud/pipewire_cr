@@ -250,7 +250,11 @@ describe Pipewire::SPA::PodFactory do
 
     it "builds fraction range pod" do
       pod = Pipewire::SPA::PodFactory.new
-      pod.range({30, 1}, {1, 1}, {60, 1}, Pipewire::LibSPA::PodType::Fraction)
+      pod.range(
+        Pipewire::SPA::PodFactory::Fraction.new(30, 1),
+        Pipewire::SPA::PodFactory::Fraction.new(1, 1),
+        Pipewire::SPA::PodFactory::Fraction.new(60, 1)
+      )
 
       slice = pod.to_slice
 
