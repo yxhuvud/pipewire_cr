@@ -4,6 +4,14 @@ private def u32(to_slice, offset)
   IO::ByteFormat::LittleEndian.decode(UInt32, to_slice[offset, 4])
 end
 
+private def f32(to_slice, offset)
+  IO::ByteFormat::LittleEndian.decode(Float32, to_slice[offset, 4])
+end
+
+private def i64(to_slice, offset)
+  IO::ByteFormat::LittleEndian.decode(Int64, to_slice[offset, 8])
+end
+
 private def aligned8?(to_slice)
   to_slice.size % 8 == 0
 end
@@ -56,6 +64,34 @@ describe Pipewire::SPA::PodFactory do
 
       aligned8?(to_slice).should be_true
     end
+
+    it "builds fraction pod" do
+      pod = Pipewire::SPA::PodFactory.new
+      pod.fraction(1, 2)
+
+      to_slice = pod.to_slice
+
+      u32(to_slice, 0).should eq(8) # size of num + denom
+      u32(to_slice, 4).should eq(Pipewire::LibSPA::PodType::Fraction.value)
+      u32(to_slice, 8).should eq(1)  # num
+      u32(to_slice, 12).should eq(2) # denom
+
+      aligned8?(to_slice).should be_true
+    end
+
+    it "builds rectangle pods" do
+      pod = Pipewire::SPA::PodFactory.new
+      pod.rectangle(100, 200)
+
+      to_slice = pod.to_slice
+
+      u32(to_slice, 0).should eq(8) # size of width + height
+      u32(to_slice, 4).should eq(Pipewire::LibSPA::PodType::Rectangle.value)
+      u32(to_slice, 8).should eq(100)  # width
+      u32(to_slice, 12).should eq(200) # height
+
+      aligned8?(to_slice).should be_true
+    end
   end
 
   describe "object pods" do
@@ -104,6 +140,178 @@ describe Pipewire::SPA::PodFactory do
       u32(to_slice, prop_offset).should eq(key)
 
       aligned8?(to_slice).should be_true
+    end
+  end
+
+  describe "array pods" do
+    it "builds int array pod" do
+      pod = Pipewire::SPA::PodFactory.new
+      pod.array([1, 2, 3])
+
+      slice = pod.to_slice
+
+      # header
+      u32(slice, 0).should eq(8 + 3 * 4) # child header + 3 ints
+      u32(slice, 4).should eq(Pipewire::LibSPA::PodType::Array.value)
+
+      # child header
+      u32(slice, 8).should eq(4) # element size
+      u32(slice, 12).should eq(Pipewire::LibSPA::PodType::Int.value)
+
+      # values
+      u32(slice, 16).should eq(1)
+      u32(slice, 20).should eq(2)
+      u32(slice, 24).should eq(3)
+
+      aligned8?(slice).should be_true
+    end
+
+    it "builds float32 array pod" do
+      pod = Pipewire::SPA::PodFactory.new
+      pod.array([1.0_f32, 2.5_f32])
+
+      slice = pod.to_slice
+
+      u32(slice, 0).should eq(8 + 2 * 4)
+      u32(slice, 4).should eq(Pipewire::LibSPA::PodType::Array.value)
+
+      u32(slice, 8).should eq(4)
+      u32(slice, 12).should eq(Pipewire::LibSPA::PodType::Float.value)
+
+      f32(slice, 16).should eq(1.0_f32)
+      f32(slice, 20).should eq(2.5_f32)
+
+      aligned8?(slice).should be_true
+    end
+
+    it "builds int64 array pod" do
+      pod = Pipewire::SPA::PodFactory.new
+      pod.array([1_i64, 2_i64])
+
+      slice = pod.to_slice
+
+      u32(slice, 0).should eq(8 + 2 * 8)
+      u32(slice, 4).should eq(Pipewire::LibSPA::PodType::Array.value)
+
+      u32(slice, 8).should eq(8)
+      u32(slice, 12).should eq(Pipewire::LibSPA::PodType::Long.value)
+
+      i64(slice, 16).should eq(1_i64)
+      i64(slice, 24).should eq(2_i64)
+
+      aligned8?(slice).should be_true
+    end
+  end
+
+  describe "range pods" do
+    it "builds int range pod" do
+      pod = Pipewire::SPA::PodFactory.new
+      pod.range(10, 0, 20)
+
+      slice = pod.to_slice
+
+      u32(slice, 0).should eq(28) # body size
+      u32(slice, 4).should eq(Pipewire::LibSPA::PodType::Choice.value)
+
+      u32(slice, 8).should eq(Pipewire::LibSPA::Choice::Range.value)
+      u32(slice, 12).should eq(0) # flags
+
+      u32(slice, 16).should eq(4)
+      u32(slice, 20).should eq(Pipewire::LibSPA::PodType::Int.value)
+
+      u32(slice, 24).should eq(10) # default
+      u32(slice, 28).should eq(0)  # min
+      u32(slice, 32).should eq(20) # max
+
+      aligned8?(slice).should be_true
+    end
+
+    it "builds float32 range pod" do
+      pod = Pipewire::SPA::PodFactory.new
+      pod.range(0.5_f32, 0.0_f32, 1.0_f32)
+
+      slice = pod.to_slice
+
+      u32(slice, 0).should eq(28)
+      u32(slice, 4).should eq(Pipewire::LibSPA::PodType::Choice.value)
+
+      u32(slice, 8).should eq(Pipewire::LibSPA::Choice::Range.value)
+      u32(slice, 12).should eq(0)
+
+      u32(slice, 16).should eq(4)
+      u32(slice, 20).should eq(Pipewire::LibSPA::PodType::Float.value)
+
+      f32(slice, 24).should eq(0.5_f32)
+      f32(slice, 28).should eq(0.0_f32)
+      f32(slice, 32).should eq(1.0_f32)
+
+      aligned8?(slice).should be_true
+    end
+
+    it "builds fraction range pod" do
+      pod = Pipewire::SPA::PodFactory.new
+      pod.range(
+        Pipewire::SPA::PodFactory::Fraction.new(30, 1),
+        Pipewire::SPA::PodFactory::Fraction.new(1, 1),
+        Pipewire::SPA::PodFactory::Fraction.new(60, 1)
+      )
+
+      slice = pod.to_slice
+
+      # pod header
+      u32(slice, 0).should eq(40)
+      u32(slice, 4).should eq(Pipewire::LibSPA::PodType::Choice.value)
+
+      # choice header
+      u32(slice, 8).should eq(Pipewire::LibSPA::Choice::Range.value)
+      u32(slice, 12).should eq(0)
+
+      # child header
+      u32(slice, 16).should eq(8)
+      u32(slice, 20).should eq(Pipewire::LibSPA::PodType::Fraction.value)
+
+      u32(slice, 24).should eq(30)
+      u32(slice, 28).should eq(1)
+
+      u32(slice, 32).should eq(1)
+      u32(slice, 36).should eq(1)
+
+      u32(slice, 40).should eq(60)
+      u32(slice, 44).should eq(1)
+
+      aligned8?(slice).should be_true
+    end
+  end
+
+  describe "enum pods" do
+    it "builds enum choice pod (id)" do
+      pod = Pipewire::SPA::PodFactory.new
+      pod.choice_enum_id(Pipewire::LibSPA::AudioFormat::S16, [
+        Pipewire::LibSPA::AudioFormat::S16_LE,
+        Pipewire::LibSPA::AudioFormat::S16_BE,
+        Pipewire::LibSPA::AudioFormat::S24_BE,
+      ])
+
+      slice = pod.to_slice
+
+      # pod header
+      u32(slice, 0).should eq(8 + 8 + 4 * 4) # 8 + 8 + 16 = 32
+      u32(slice, 4).should eq(Pipewire::LibSPA::PodType::Choice.value)
+
+      # choice header
+      u32(slice, 8).should eq(Pipewire::LibSPA::Choice::Enum.value)
+      u32(slice, 12).should eq(0)
+
+      # child header
+      u32(slice, 16).should eq(4)
+      u32(slice, 20).should eq(Pipewire::LibSPA::PodType::Id.value)
+
+      u32(slice, 24).should eq(Pipewire::LibSPA::AudioFormat::S16.value)
+      u32(slice, 28).should eq(Pipewire::LibSPA::AudioFormat::S16_LE.value)
+      u32(slice, 32).should eq(Pipewire::LibSPA::AudioFormat::S16_BE.value)
+      u32(slice, 36).should eq(Pipewire::LibSPA::AudioFormat::S24_BE.value)
+
+      aligned8?(slice).should be_true
     end
   end
 

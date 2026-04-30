@@ -3,6 +3,10 @@ require "../../lib/lib_spa"
 module Pipewire
   module SPA
     class PodFactory
+      # Composite helper types:
+      record(Fraction, numerator : UInt32, denominator : UInt32)
+      record(Rectangle, width : UInt32, height : UInt32)
+
       getter io : IO::Memory
 
       def initialize
@@ -45,6 +49,28 @@ module Pipewire
         align8
       end
 
+      def fraction(fraction : Fraction)
+        fraction(fraction.width, fraction.height)
+      end
+
+      def fraction(num : UInt32, denom : UInt32)
+        write_header(8, LibSPA::PodType::Fraction)
+        write_bytes(num)
+        write_bytes(denom)
+        align8
+      end
+
+      def rectangle(rectangle : Rectangle)
+        rectangle(rectangle.width, rectangle.height)
+      end
+
+      def rectangle(width : UInt32, height : UInt32)
+        write_header(8, LibSPA::PodType::Rectangle)
+        write_bytes(width)
+        write_bytes(height)
+        align8
+      end
+
       def string(value : String)
         bytes = value.to_slice
         size = bytes.size + 1
@@ -55,71 +81,67 @@ module Pipewire
         align8
       end
 
-      {% begin %}
-        {% for args in [
-                         {"Bool", 4, "Bool"},
-                         {"Int32", 4, "Int"},
-                         {"Int64", 8, "Long"},
-                         {"Float32", 4, "Float"},
-                         {"Float64", 8, "Double"},
-                       ] %}
-          {% arg_type, value_size, pod_type = args %}
-          def array(values : Array({{arg_type.id}}))
-            start = @io.pos
+      {% for entry in [
+                        {Int32, 4, "Int"},
+                        {Int64, 8, "Long"},
+                        {Float32, 4, "Float"},
+                        {Float64, 8, "Double"},
+                        {Bool, 4, "Bool"},
+                        {Rectangle, 8, "Rectangle"},
+                        {Fraction, 8, "Fraction"},
+                      ] %}
 
-            write_header(0, LibSPA::PodType::Array)
+        {% type, size, pod = entry %}
 
-            body_start = @io.pos
+        def array(values : Array({{type.id}}))
+          write_array({{size}}, LibSPA::PodType::{{pod.id}}, values)
+        end
 
-            write_header({{value_size}}, LibSPA::PodType::{{pod_type.id}})
-
-            values.each do |v|
-              write_bytes v
-            end
-
-            body_end = @io.pos
-            size = (body_end - body_start).to_u32
-
-            patch_size(start, size)
-
-            align8
+        def range(default : {{type.id}}, min : {{type.id}}, max : {{type.id}})
+          write_choice(LibSPA::Choice::Range, {{size}}, LibSPA::PodType::{{pod.id}}) do
+            write_bytes(default)
+            write_bytes(min)
+            write_bytes(max)
           end
-        {% end %}
+        end
       {% end %}
 
-      def object(obj_type : Pipewire::LibSPA::PodObjectType, obj_id : Pipewire::LibSPA::ParamType, &)
-        start = @io.pos
-
-        # reserve header
-        write_header(0, LibSPA::PodType::Object)
-
-        body_start = @io.pos
-
-        write_bytes(obj_type.value)
-        write_bytes(obj_id.value)
-
-        yield self
-
-        body_end = @io.pos
-        size = (body_end - body_start).to_u32
-
-        # patch header
-        patch_size(start, size)
-
+      private def write_array(element_size : Int32, element_type : LibSPA::PodType, values)
+        reserve_header(LibSPA::PodType::Array) do
+          write_header(element_size.to_u32, element_type)
+          values.each { |v| write_bytes v }
+        end
         align8
+      end
+
+      def object(obj_type : Pipewire::LibSPA::PodObjectType, obj_id : Pipewire::LibSPA::ParamType, &)
+        reserve_header(LibSPA::PodType::Object) do
+          write_bytes(obj_type.value)
+          write_bytes(obj_id.value)
+          yield self
+        end
+        align8
+      end
+
+      private def write_choice(choice_type : LibSPA::Choice, element_size : Int32, element_type : LibSPA::PodType, &)
+        reserve_header(LibSPA::PodType::Choice) do
+          write_bytes(choice_type.value)
+          write_bytes(0) # flags
+          write_header(element_size.to_u32, element_type)
+          yield
+        end
+        align8
+      end
+
+      def choice_enum_id(default : T, values : Enumerable(T)) forall T
+        write_choice(LibSPA::Choice::Enum, 4, LibSPA::PodType::Id) do
+          write_bytes(default.value)
+          values.each { |v| write_bytes(v.value) }
+        end
       end
 
       def prop(key : UInt32, flags : Pipewire::LibSPA::PropFlag = Pipewire::LibSPA::PropFlag::None, &)
         write_bytes(key)
-        write_bytes(flags.value)
-        yield self
-      end
-
-      # FIXME: Separate builder for audio and video format objects.
-      # This is just to keep the boilerplate in example down. It is
-      # still horrible though.
-      def prop(key : Pipewire::LibSPA::Format, flags : Pipewire::LibSPA::PropFlag = Pipewire::LibSPA::PropFlag::None, &)
-        write_bytes(key.value.to_u32)
         write_bytes(flags.value)
         yield self
       end
@@ -138,11 +160,31 @@ module Pipewire
         @io.write_bytes(value, IO::ByteFormat::LittleEndian)
       end
 
+      private def write_bytes(value : Rectangle)
+        write_bytes value.width
+        write_bytes value.height
+      end
+
+      private def write_bytes(value : Fraction)
+        write_bytes value.numerator
+        write_bytes value.denominator
+      end
+
       private def patch_size(offset : Int32, size : UInt32)
         current = @io.pos
         @io.pos = offset
         write_bytes(size)
         @io.pos = current
+      end
+
+      private def reserve_header(element_type : LibSPA::PodType, &)
+        start = @io.pos
+        write_header(0, element_type)
+        body_start = @io.pos
+        yield
+        body_end = @io.pos
+        size = (body_end - body_start).to_u32
+        patch_size(start, size)
       end
 
       def to_unsafe

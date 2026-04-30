@@ -1,5 +1,6 @@
 require "./type_info"
 require "./pod_factory"
+require "./pod_factory/format"
 
 module Pipewire
   module SPA
@@ -7,11 +8,19 @@ module Pipewire
       value_getter size : UInt32
       value_getter type : LibSPA::PodType
 
-      def self.build(&)
+      def self.new(&)
         pod = PodFactory.new
         yield pod
 
-        new(pod.to_unsafe)
+        new(pod)
+      end
+
+      def self.format(&)
+        new(PodFactory::Format.new { |f| yield f })
+      end
+
+      def self.new(factory : PodFactory)
+        new(factory.to_unsafe)
       end
 
       private def self.spa_ptrinside(p0 : T*, s0, p1 : U*, s1) forall T, U
@@ -42,12 +51,12 @@ module Pipewire
         (result = self.spa_ptr_type_inside(pod, size, iter))[0] && result[1] >= iter.value.size
       end
 
-      alias Value = Nil | Bool | Int32 | Int64 | Float32 | Float64 | String | Array(Value) | Hash(String, Value)
+      alias Value = Nil | Bool | Int32 | Int64 | Float32 | Float64 | String | Array(Value) | Hash(String, Value) | Tuple(Int32, Int32)
 
       def self.to_value(type : LibSPA::PodType, size : UInt32, body : Void*, type_info_list : TypeInfoList) : Value
         case type
         when LibSPA::PodType::None
-          nil
+          "<none>"
         when LibSPA::PodType::Bool
           if size >= sizeof(Int32)
             body.as(Int32*).value != 0
@@ -96,16 +105,24 @@ module Pipewire
           end
         when LibSPA::PodType::Bytes
           # TODO: Implement this.
-          nil
+          "<bytes>"
         when LibSPA::PodType::Rectangle
           # TODO: Implement this.
-          nil
+          # "<rectangle>"
+          if size >= sizeof(Int32) * 2
+            body.as(Tuple(Int32, Int32)*).value
+          else
+            nil
+          end
         when LibSPA::PodType::Fraction
-          # TODO: Implement this.
-          nil
+          if size >= sizeof(Int32) * 2
+            body.as(Tuple(Int32, Int32)*).value
+          else
+            nil
+          end
         when LibSPA::PodType::Bitmap
           # TODO: Implement this.
-          nil
+          "<bitmap>"
         when LibSPA::PodType::Array
           if size >= sizeof(LibSPA::PodArrayBody)
             array_body = body.as(LibSPA::PodArrayBody*)
@@ -154,16 +171,15 @@ module Pipewire
 
           hash
         when LibSPA::PodType::Sequence
-          nil
+          "<sequence>"
         when LibSPA::PodType::Pointer
           # TODO: Implement this.
-          nil
+          "<pointer>"
         when LibSPA::PodType::Choice
-          # TODO: Implement this.
-          nil
+          "<choice>"
         when LibSPA::PodType::Pod
           # TODO: Implement this.
-          nil
+          "<pod>"
         end
       end
 
