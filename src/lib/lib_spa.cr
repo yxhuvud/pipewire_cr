@@ -16,7 +16,8 @@ module Pipewire
       Output
     end
 
-    enum ParamType
+    # defined in param.h. Deviates typewise to avoid having to cast the value everywhere.
+    enum ParamType : UInt32
       Invalid
       PropInfo
       Props
@@ -272,7 +273,8 @@ module Pipewire
       DSP_F32 = RGBA_F32
     end
 
-    enum PodType
+    # defined in pod.h. Deviates typewise to avoid having to cast the value everywhere.
+    enum PodType : UInt32
       START     = 0x00000
       None
       Bool
@@ -296,7 +298,8 @@ module Pipewire
       Pod
     end
 
-    enum PodObjectType
+    # Defined in pod.h. Deviates typewise to avoid having to cast the value everywhere.
+    enum PodObjectType : UInt32
       START               = 0x40000
       PropInfo
       Props
@@ -315,7 +318,8 @@ module Pipewire
       ParamDict
     end
 
-    enum Choice
+    # defined in pod.h. Deviates typewise to avoid having to cast the value everywhere.
+    enum Choice : UInt32
       None
       Range
       Step
