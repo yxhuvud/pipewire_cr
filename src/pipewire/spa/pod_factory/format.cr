@@ -93,7 +93,7 @@ module Pipewire
 
         def audio_rate(default : Int32, min : Int32, max : Int32)
           prop(LibSPA::Format::AUDIO_rate) do
-            @pod_factory.range(default, min, max, LibSPA::PodType::Int)
+            @pod_factory.range(default, min, max)
           end
         end
 
