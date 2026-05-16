@@ -32,6 +32,8 @@ module Pipewire
                     {{ t }}*,
                   {% elsif t <= parse_type("Pipewire::Base").resolve %}
                     {{ t.ancestors.find { |a| a.name(generic_args: false) == "Pipewire::Base" }.type_vars.first }}*,
+                  {% elsif t.resolve == Pipewire::SPA::Pod %}
+                    LibSPA::Pod*,
                   {% elsif t.resolve == String %}
                     LibC::Char*,
                   {% else %}
@@ -47,6 +49,8 @@ module Pipewire
                   arg{{ i }}.value,
                 {% elsif t <= parse_type("Pipewire::Base").resolve %}
                   {{ t }}.new(arg{{ i }}),
+                {% elsif t.resolve == Pipewire::SPA::Pod %}
+                  Pipewire::SPA::Pod.new(arg{{ i }}),
                 {% elsif t.resolve == String %}
                   String.new(arg{{ i }}),
                 {% else %}
