@@ -97,7 +97,7 @@ describe Pipewire::SPA::Pod do
         f.fraction(1, 2)
       end
 
-      pod.to_value.should eq({1,2})
+      pod.to_value.should eq({1, 2})
     end
 
     it "returns an array of values given a pod of type Array" do
