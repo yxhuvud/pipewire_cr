@@ -132,7 +132,7 @@ module Pipewire
 
         Array(Value).new(size: element_count) do |i|
           self.class.new(body[i * element_size, element_size])
-            .to_value(array_type, type_info_list, headerfree: true)
+            .to_value(type_info_list, array_type, headerfree: true)
         end
       end
 
@@ -144,7 +144,7 @@ module Pipewire
         while body.size > 0
           pod = self.class.new(body)
           body += pod.padded_size
-          arr << pod.to_value(pod.type, type_info_list)
+          arr << pod.to_value(type_info_list)
         end
         arr
       end
@@ -167,7 +167,7 @@ module Pipewire
           body += 8
           pod = self.class.new(body)
           body += pod.padded_size
-          hash[key] = pod.to_value(pod.type, ii && ii.values.any? ? ii.values : info_list)
+          hash[key] = pod.to_value(ii && ii.values.any? ? ii.values : info_list)
         end
         hash
       end
@@ -186,33 +186,33 @@ module Pipewire
         in LibSPA::Choice::Range
           raise "Invalid size for choice range" if size != 16 + element_size * 3
 
-          hsh["default"] = self.class.new(body).to_value(element_type, type_info_list, headerfree: true)
-          hsh["min"] = self.class.new(body + element_size).to_value(element_type, type_info_list, headerfree: true)
-          hsh["max"] = self.class.new(body + element_size * 2).to_value(element_type, type_info_list, headerfree: true)
+          hsh["default"] = self.class.new(body).to_value(type_info_list, element_type, headerfree: true)
+          hsh["min"] = self.class.new(body + element_size).to_value(type_info_list, element_type, headerfree: true)
+          hsh["max"] = self.class.new(body + element_size * 2).to_value(type_info_list, element_type, headerfree: true)
         in LibSPA::Choice::Step
           raise "Invalid size for choice step" if size != 16 + element_size * 3
 
-          hsh["default"] = self.class.new(body).to_value(element_type, type_info_list, headerfree: true)
-          hsh["min"] = self.class.new(body + element_size).to_value(element_type, type_info_list, headerfree: true)
-          hsh["max"] = self.class.new(body + element_size * 2).to_value(element_type, type_info_list, headerfree: true)
-          hsh["step"] = self.class.new(body + element_size * 3).to_value(element_type, type_info_list, headerfree: true)
+          hsh["default"] = self.class.new(body).to_value(type_info_list, element_type, headerfree: true)
+          hsh["min"] = self.class.new(body + element_size).to_value(type_info_list, element_type, headerfree: true)
+          hsh["max"] = self.class.new(body + element_size * 2).to_value(type_info_list, element_type, headerfree: true)
+          hsh["step"] = self.class.new(body + element_size * 3).to_value(type_info_list, element_type, headerfree: true)
         in LibSPA::Choice::Enum
           raise "Invalid size for choice enum" if (size - 16) % element_size != 0
 
-          hsh["default"] = self.class.new(body).to_value(element_type, type_info_list, headerfree: true)
+          hsh["default"] = self.class.new(body).to_value(type_info_list, element_type, headerfree: true)
           hsh["enums"] = Array(Value).new(size: (size - 16) // element_size - 1) do |i|
-            self.class.new(body + (i + 1) * element_size).to_value(element_type, type_info_list, headerfree: true)
+            self.class.new(body + (i + 1) * element_size).to_value(type_info_list, element_type, headerfree: true)
           end
         in LibSPA::Choice::Flags
           return "<TODO: Choice Flags>"
         in LibSPA::Choice::None
           raise "Invalid size for choice none" if size != 16
-          hsh["default"] = self.class.new(body).to_value(element_type, type_info_list, headerfree: true)
+          hsh["default"] = self.class.new(body).to_value(type_info_list, element_type, headerfree: true)
         end
         hsh
       end
 
-      def to_value(type : LibSPA::PodType = self.type, type_info_list = TypeInfoList.root, headerfree = false) : Value
+      def to_value(type_info_list = TypeInfoList.root, type : LibSPA::PodType = self.type, headerfree = false) : Value
         case type
         in .none?      then nil
         in .bool?      then as_bool(headerfree)
