@@ -16,7 +16,8 @@ module Pipewire
       Output
     end
 
-    enum ParamType
+    # defined in param.h. Deviates typewise to avoid having to cast the value everywhere.
+    enum ParamType : UInt32
       Invalid
       PropInfo
       Props
@@ -272,7 +273,8 @@ module Pipewire
       DSP_F32 = RGBA_F32
     end
 
-    enum PodType
+    # defined in pod.h. Deviates typewise to avoid having to cast the value everywhere.
+    enum PodType : UInt32
       START     = 0x00000
       None
       Bool
@@ -296,7 +298,8 @@ module Pipewire
       Pod
     end
 
-    enum PodObjectType
+    # Defined in pod.h. Deviates typewise to avoid having to cast the value everywhere.
+    enum PodObjectType : UInt32
       START               = 0x40000
       PropInfo
       Props
@@ -315,7 +318,8 @@ module Pipewire
       ParamDict
     end
 
-    enum Choice
+    # defined in pod.h. Deviates typewise to avoid having to cast the value everywhere.
+    enum Choice : UInt32
       None
       Range
       Step
@@ -567,142 +571,9 @@ module Pipewire
       type : PodType
     end
 
-    struct PodBool
-      pod : Pod
-      value : Int32
-      _padding : Int32
-    end
-
-    struct PodId
-      pod : Pod
-      value : UInt32
-      _padding : Int32
-    end
-
-    struct PodInt
-      pod : Pod
-      value : Int32
-      _padding : Int32
-    end
-
-    struct PodLong
-      pod : Pod
-      value : Int64
-    end
-
-    struct PodFloat
-      pod : Pod
-      value : Float32
-      _padding : Int32
-    end
-
-    struct PodDouble
-      pod : Pod
-      value : Float64
-    end
-
-    struct PodString
-      pod : Pod
-    end
-
-    struct PodBytes
-      pod : Pod
-    end
-
-    struct Rectangle
-      width : UInt32
-      height : UInt32
-    end
-
-    struct PodRectangle
-      pod : Pod
-      value : Rectangle
-    end
-
-    struct Fraction
-      numerator : UInt32
-      denominator : UInt32
-    end
-
-    struct PodFraction
-      pod : Pod
-      value : Fraction
-    end
-
-    struct PodBitmap
-      pod : Pod
-    end
-
-    struct PodArrayBody
-      child : Pod
-    end
-
-    struct PodArray
-      pod : Pod
-      body : PodArrayBody
-    end
-
-    struct PodChoiceBody
-      type : UInt32
-      flags : UInt32
-      child : Pod
-    end
-
-    struct PodChoice
-      pod : Pod
-      body : PodChoiceBody
-    end
-
-    struct PodStruct
-      pod : Pod
-    end
-
     struct PodObjectBody
       type : PodObjectType
       id : UInt32
-    end
-
-    struct PodObject
-      pod : Pod
-      body : PodObjectBody
-    end
-
-    struct PodPointerBody
-      type : PodType
-      _padding : UInt32
-      value : Void*
-    end
-
-    struct PodPointer
-      pod : Pod
-      body : PodPointerBody
-    end
-
-    struct PodFd
-      pod : Pod
-      value : Int64
-    end
-
-    struct PodProp
-      key : Prop
-      flags : PropFlag
-      value : Pod
-    end
-
-    struct PodControl
-      offset : UInt32
-      type : ControlType
-      value : Pod
-    end
-
-    struct PodSequenceBody
-      unit : UInt32
-      pad : UInt32
-    end
-
-    struct PodSequence
-      pod : Pod
-      body : PodSequenceBody
     end
 
     struct PodFrame

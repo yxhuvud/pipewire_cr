@@ -13,6 +13,11 @@ module Pipewire
         @io = IO::Memory.new
       end
 
+      def none
+        write_header(0, LibSPA::PodType::None)
+        align8
+      end
+
       def int(value : Int32)
         write_header(4, LibSPA::PodType::Int)
         write_bytes(value)
@@ -24,6 +29,13 @@ module Pipewire
         write_bytes(value)
         align8
       end
+
+      # TODO: interact with actual crystal file descriptors.
+      # def fd(value : Int64)
+      #   write_header(4, LibSPA::PodType::Fd)
+      #   write_bytes value
+      #   align8
+      # end
 
       def id(value)
         write_header(4, LibSPA::PodType::Id)
@@ -144,6 +156,13 @@ module Pipewire
         write_bytes(key)
         write_bytes(flags.value)
         yield self
+      end
+
+      def struct(&)
+        reserve_header(LibSPA::PodType::Struct) do
+          yield self
+        end
+        align8
       end
 
       private def align8

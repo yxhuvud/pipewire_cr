@@ -361,6 +361,36 @@ describe Pipewire::SPA::PodFactory do
     end
   end
 
+  describe "struct pods" do
+    it "builds struct pod" do
+      pod = Pipewire::SPA::PodFactory.new
+      pod.struct do
+        pod.int(42)
+        pod.string("hello")
+      end
+
+      to_slice = pod.to_slice
+
+      # struct header
+      u32(to_slice, 0).should eq(16 + 16)
+      u32(to_slice, 4).should eq(Pipewire::LibSPA::PodType::Struct.value)
+
+      # int value
+      u32(to_slice, 8).should eq(4)
+      u32(to_slice, 12).should eq(Pipewire::LibSPA::PodType::Int.value)
+      u32(to_slice, 16).should eq(42)
+
+      # string value
+      size = u32(to_slice, 24)
+      u32(to_slice, 28).should eq(Pipewire::LibSPA::PodType::String.value)
+      size.should eq(6) # "hello\0"
+
+      to_slice[32, 6].should eq(Bytes[104, 101, 108, 108, 111, 0]) # "hello\0"
+
+      aligned8?(to_slice).should be_true
+    end
+  end
+
   describe "alignment" do
     it "pads to 8 to_slice for multiple writes" do
       pod = Pipewire::SPA::PodFactory.new
